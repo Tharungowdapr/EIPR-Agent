@@ -7,7 +7,9 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        value: sqlite:///./eipr_agent.db
+        fromDatabase:
+          name: eipr-db
+          property: connectionString
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: ENCRYPTION_KEY
@@ -22,3 +24,9 @@ services:
         value: INFO
       - key: ENABLE_MLFLOW
         value: false
+
+databases:
+  - name: eipr-db
+    plan: free
+    databaseName: eipr
+    ipAllowList: []
