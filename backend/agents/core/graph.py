@@ -59,7 +59,7 @@ Return as JSON with keys: opportunities, ip_strategy, business_model, financial_
             HumanMessage(content=prompt),
         ]
         response = llm.invoke(messages)
-        
+
         import re
         text = response.content
         json_match = re.search(r'\{.*\}', text, re.DOTALL)

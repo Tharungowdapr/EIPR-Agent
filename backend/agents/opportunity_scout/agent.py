@@ -97,7 +97,7 @@ async def run_opportunity_scout(
     raw = await llm.complete(prompt, system=OPPORTUNITY_SYSTEM, json_mode=True)
     result = _parse_json(raw)
     if not result or "opportunities" not in result:
-        raise ValueError(f"LLM returned invalid response: missing 'opportunities' key")
+        raise ValueError("LLM returned invalid response: missing 'opportunities' key")
     _enrich_from_mcp(result)
     return result
 

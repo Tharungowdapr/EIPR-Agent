@@ -234,9 +234,9 @@ for o in outputs:
     db.add(o)
 db.commit()
 
-print(f"✅ Demo user created!")
-print(f"   Email:    demo@eipr.dev")
-print(f"   Password: demo123456")
+print("✅ Demo user created!")
+print("   Email:    demo@eipr.dev")
+print("   Password: demo123456")
 print(f"   Project:  '{project.title}' with all 5 stages populated")
-print(f"\nLogin at http://localhost:3000/auth/login and explore the full workflow.")
+print("\nLogin at http://localhost:3000/auth/login and explore the full workflow.")
 db.close()
