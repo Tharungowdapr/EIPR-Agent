@@ -25,17 +25,17 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     Promise.all([
       projectsAPI.list(),
       mlopsAPI.getStats().catch(() => null),
-    ])
-      .then(([projData, mlopsData]) => {
-        setProjects(projData);
-        setStats(mlopsData);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    ]).then(([p, s]) => {
+      setProjects(p);
+      setStats(s);
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   if (!mounted) return null;

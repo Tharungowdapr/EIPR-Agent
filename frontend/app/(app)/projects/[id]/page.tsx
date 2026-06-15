@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ChevronLeft, ChevronRight, Loader2, Lightbulb, Shield, Briefcase, TrendingUp,
-  FileText, Check, Sparkles, Trash2, ArrowRight,
+  FileText, Check, Sparkles, Trash2, ArrowRight, Download,
 } from 'lucide-react';
 import { ComplianceChecklist } from '@/components/ui/ComplianceChecklist';
 import { projectsAPI } from '@/services/api';
@@ -58,9 +58,10 @@ function StageCard({ stage, project, outputs, isCurrent }: { stage: typeof STAGE
   );
 }
 
-export default function ProjectHubPage({ params }: { params: { id: string } }) {
+export default function ProjectHubPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [deleting, setDeleting] = useState(false);
 
@@ -68,13 +69,34 @@ export default function ProjectHubPage({ params }: { params: { id: string } }) {
     if (!confirm('Delete this project and all its analysis data? This cannot be undone.')) return;
     setDeleting(true);
     try {
-      await projectsAPI.delete(params.id);
+      await projectsAPI.delete(id);
       addToast('Project deleted', 'success');
       router.push('/projects');
     } catch (err: any) {
       addToast(err?.response?.data?.detail || 'Failed to delete project', 'error');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const [exporting, setExporting] = useState(false);
+  const downloadFullPdf = async () => {
+    setExporting(true);
+    try {
+      const blob = await projectsAPI.exportFullPdf(id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${project.title.replace(/\s+/g, '_')}_full_report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      addToast('Full project PDF downloaded', 'success');
+    } catch (err: any) {
+      addToast(err?.detail || 'Failed to export PDF', 'error');
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -109,6 +131,12 @@ export default function ProjectHubPage({ params }: { params: { id: string } }) {
             {project.domain} · Created {project.created_at ? formatDistanceToNow(new Date(project.created_at), { addSuffix: true }) : ''}
           </p>
         </div>
+        {(outputs.opportunities || outputs.report) && (
+          <button onClick={downloadFullPdf} disabled={exporting} className="btn-ghost text-xs text-brand-400 hover:text-brand-300">
+            {exporting ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+            {exporting ? 'Exporting...' : 'Export PDF'}
+          </button>
+        )}
         <button onClick={handleDelete} disabled={deleting} className="btn-ghost text-xs text-red-400 hover:text-red-300">
           {deleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
           Delete

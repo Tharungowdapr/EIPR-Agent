@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { projectsAPI } from '@/services/api';
+import { useToastStore } from '@/store/useToastStore';
 import { Loader2, Sparkles, FlaskConical, Layers } from 'lucide-react';
 
 const SAMPLE_TOPICS = [
@@ -55,6 +56,7 @@ export default function NewProjectPage() {
   const [error, setError] = useState('');
   const [expandedTopic, setExpandedTopic] = useState<string | null>(null);
   const [batchMode, setBatchMode] = useState(false);
+  const { addToast } = useToastStore();
   const [batchLines, setBatchLines] = useState('');
 
   const loadSample = (topic: SampleTopic) => {
@@ -76,15 +78,18 @@ export default function NewProjectPage() {
       if (domains.length === 0) return;
       setLoading(true);
       setError('');
+      const created: string[] = [];
       try {
-        let lastId = '';
         for (const d of domains) {
           const p = await projectsAPI.create(d.slice(0, 60), d.split(/[,|]/)[0]?.trim() || 'General', d, '');
-          lastId = p.id;
+          created.push(p.id);
         }
-        router.push(`/projects/${lastId}`);
+        if (created.length > 0) {
+          addToast(`Created ${created.length} project${created.length > 1 ? 's' : ''}`, 'success');
+          router.push(`/projects/${created[created.length - 1]}`);
+        }
       } catch (err: any) {
-        setError(err?.response?.data?.detail || 'Batch creation failed');
+        setError(err?.response?.data?.detail || `Batch creation failed after ${created.length} projects`);
       } finally {
         setLoading(false);
       }
@@ -214,7 +219,7 @@ export default function NewProjectPage() {
               value={inputText} onChange={(e) => setInputText(e.target.value)} required
             />
             <p className="text-xs text-[var(--text-muted)] mt-1.5">
-              Don't have a specific idea? Just describe a domain and we'll discover opportunities for you.
+              Don&apos;t have a specific idea? Just describe a domain and we&apos;ll discover opportunities for you.
             </p>
           </div>
 

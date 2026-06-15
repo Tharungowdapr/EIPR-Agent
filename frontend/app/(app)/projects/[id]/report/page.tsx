@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, Loader2, FileText, Sparkles, Download, Check, GraduationCap, Briefcase, Users } from 'lucide-react';
 import { agentsAPI } from '@/services/api';
@@ -8,8 +8,9 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-export default function ReportPage({ params }: { params: { id: string } }) {
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [processing, setProcessing] = useState('');
   const [progressSteps, setProgressSteps] = useState<string[]>([]);
@@ -27,7 +28,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
     setProcessing('Generating Report');
     setProgressSteps([]);
     try {
-      await agentsAPI.reportStream(params.id, (event) => {
+      await agentsAPI.reportStream(id, (event) => {
         if (event.step === 'analyzing') {
           setProgressSteps((prev) => [...prev, event.message || 'Analyzing...']);
         } else if (event.step === 'complete') {
@@ -39,7 +40,10 @@ export default function ReportPage({ params }: { params: { id: string } }) {
           addToast(event.message || 'Report generation failed', 'error');
           setProcessing('');
         }
-      }, reportTemplate);
+      }, reportTemplate, (err: any) => {
+        addToast(err?.detail || 'Report generation failed', 'error');
+        setProcessing('');
+      });
     } catch (err: any) {
       addToast(err?.detail || 'Report generation failed', 'error');
     } finally {
@@ -51,7 +55,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
     setProcessing(`Download ${format.toUpperCase()}`);
     try {
       const fn = format === 'docx' ? agentsAPI.exportDocx : agentsAPI.exportPdf;
-      const blob = await fn(params.id);
+      const blob = await fn(id);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

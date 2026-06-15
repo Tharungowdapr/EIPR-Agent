@@ -4,13 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -39,7 +40,12 @@ export default function LoginPage() {
         </div>
         <div>
           <label className="label">Password</label>
-          <input type="password" className="input" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="relative">
+            <input type={showPassword ? 'text' : 'password'} className="input pr-10 w-full" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button type="submit" className="btn-primary w-full justify-center" disabled={loading}>
@@ -48,7 +54,7 @@ export default function LoginPage() {
         </button>
       </form>
       <p className="text-sm text-[var(--text-muted)] text-center mt-6">
-        Don't have an account? <Link href="/auth/register" className="text-brand-400 hover:text-brand-300">Sign up</Link>
+         Don&apos;t have an account? <Link href="/auth/register" className="text-brand-400 hover:text-brand-300">Sign up</Link>
       </p>
     </div>
   );

@@ -21,7 +21,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     projectsAPI.list()
       .then(setProjects)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 

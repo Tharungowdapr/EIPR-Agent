@@ -17,8 +17,8 @@ def _unique_email():
 @pytest.fixture
 def auth_headers():
     email = _unique_email()
-    client.post("/api/auth/register", json={"email": email, "name": "Proj Test", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Proj Test", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 

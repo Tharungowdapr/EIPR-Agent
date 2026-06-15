@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { ToastContainer } from '@/components/ui/ToastContainer';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Loader2 } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -14,12 +15,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    if (mounted && !isAuthenticated()) {
+    if (!mounted) return;
+    try {
+      const stored = localStorage.getItem('eipr-auth-storage');
+      if (!stored || !JSON.parse(stored).state?.token) {
+        router.replace('/auth/login');
+      }
+    } catch {
       router.replace('/auth/login');
     }
-  }, [mounted, isAuthenticated, router]);
+  }, [mounted, router]);
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center">
+      <Loader2 size={24} className="animate-spin text-brand-400" />
+    </div>
+  );
   if (!isAuthenticated()) return null;
 
   return (

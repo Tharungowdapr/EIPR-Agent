@@ -24,7 +24,7 @@ def test_register():
     resp = client.post("/api/auth/register", json={
         "email": email,
         "name": "Test User",
-        "password": "testpass123"
+        "password": "TestPass123"
     })
     assert resp.status_code == 200
     assert "user" in resp.json()
@@ -32,16 +32,16 @@ def test_register():
 
 def test_login():
     email = _email()
-    client.post("/api/auth/register", json={"email": email, "name": "Login", "password": "testpass123"})
-    resp = client.post("/api/auth/login", json={"email": email, "password": "testpass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Login", "password": "TestPass123"})
+    resp = client.post("/api/auth/login", json={"email": email, "password": "TestPass123"})
     assert resp.status_code == 200
     assert "access_token" in resp.json()
 
 
 def test_create_project():
     email = _email()
-    client.post("/api/auth/register", json={"email": email, "name": "Proj", "password": "pass123"})
-    login_resp = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Proj", "password": "Pass1234"})
+    login_resp = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Loader2, Briefcase, RefreshCw } from 'lucide-react';
 import { RevenueChart, QuarterlyChart, CostBreakdownChart } from '@/components/ui/FinancialCharts';
@@ -9,8 +9,16 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-export default function StrategyPage({ params }: { params: { id: string } }) {
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+function renderText(val: any, fallback: string = ''): string {
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (val && typeof val === 'object') return JSON.stringify(val);
+  return fallback;
+}
+
+export default function StrategyPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
@@ -23,7 +31,7 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
     setProcessing('Generating Strategy');
     setProgressSteps([]);
     try {
-      await agentsAPI.strategyStream(params.id, selectedOpp, (event) => {
+      await agentsAPI.strategyStream(id, selectedOpp, (event) => {
         if (event.step === 'analyzing') {
           setProgressSteps((prev) => [...prev, event.message || 'Analyzing...']);
         } else if (event.step === 'complete') {
@@ -51,7 +59,7 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
       <Header project={project} title="Business Strategy" subtitle="Unit II & III · SWOC, Porter, 4Ps, India business planning" />
 
       {opportunities.length === 0 ? (
-        <PrereqCard href={`/projects/${params.id}/opportunities`} message="Complete Opportunities first" />
+        <PrereqCard href={`/projects/${id}/opportunities`} message="Complete Opportunities first" />
       ) : (
         <div className="space-y-6">
           <div className="flex items-center gap-3">
@@ -97,7 +105,7 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
               {businessPlan.business_plan?.executive_summary && (
                 <div className="card">
                   <h2 className="font-semibold text-[var(--text-primary)] mb-2">Executive Summary</h2>
-                  <p className="text-sm text-[var(--text-primary)] leading-relaxed">{businessPlan.business_plan.executive_summary}</p>
+                  <p className="text-sm text-[var(--text-primary)] leading-relaxed">{renderText(businessPlan.business_plan.executive_summary)}</p>
                 </div>
               )}
 
@@ -132,7 +140,7 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
                   {businessPlan.marketing_plan.uvp && (
                     <div className="mb-3 p-3 bg-brand-600/10 border border-brand-600/30 rounded-lg">
                       <p className="text-xs text-brand-400 font-medium">Unique Value Proposition</p>
-                      <p className="text-sm text-[var(--text-primary)]">{businessPlan.marketing_plan.uvp}</p>
+                      <p className="text-sm text-[var(--text-primary)]">{renderText(businessPlan.marketing_plan.uvp)}</p>
                     </div>
                   )}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -169,13 +177,13 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
               {businessPlan.growth_strategy && (
                 <div className="card">
                   <h2 className="font-semibold text-[var(--text-primary)] mb-3">Growth Strategy for India</h2>
-                  <p className="text-sm text-[var(--text-primary)] mb-2">{businessPlan.growth_strategy.organic_growth}</p>
+                  <p className="text-sm text-[var(--text-primary)] mb-2">{renderText(businessPlan.growth_strategy.organic_growth)}</p>
                   {businessPlan.growth_strategy.strategic_alliances?.length > 0 && (
                     <div>
                       <p className="text-xs text-[var(--text-muted)] mb-1">Strategic Alliances</p>
                       <div className="flex flex-wrap gap-1">
-                        {businessPlan.growth_strategy.strategic_alliances.map((a: string, i: number) => (
-                          <span key={i} className="badge text-xs bg-brand-600/20 text-brand-400">{a}</span>
+                        {businessPlan.growth_strategy.strategic_alliances.map((a: any, i: number) => (
+                          <span key={i} className="badge text-xs bg-brand-600/20 text-brand-400">{renderText(a)}</span>
                         ))}
                       </div>
                     </div>
@@ -186,7 +194,7 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
               {/* Finance section */}
               <FinanceSection project={project} outputs={outputs} params={params} selectedOpp={selectedOpp} />
 
-              <NextButton href={`/projects/${params.id}/report`} label="Next: Final Report" />
+              <NextButton href={`/projects/${id}/report`} label="Next: Final Report" />
             </>
           )}
         </div>
@@ -195,28 +203,52 @@ export default function StrategyPage({ params }: { params: { id: string } }) {
   );
 }
 
+function fmt(val: any): string {
+  if (val == null) return '-';
+  if (typeof val === 'number') return val.toLocaleString('en-IN');
+  const s = String(val).replace(/[,₹]/g, '');
+  const n = parseFloat(s);
+  if (!isNaN(n)) return n.toLocaleString('en-IN');
+  return String(val);
+}
+
+function extractVal(obj: any, ...keys: string[]) {
+  for (const k of keys) {
+    if (obj?.[k] != null) return obj[k];
+  }
+  return null;
+}
+
 function FinanceSection({ outputs, selectedOpp }: any) {
   const fin = outputs[`financial_${selectedOpp}`];
   if (!fin) return null;
+
+  const initInv = extractVal(fin.startup_costs, 'total_initial_investment', 'total');
+  const y1Arr = extractVal(fin.revenue_projections?.year_1, 'arr', 'total');
+  const beMonths = extractVal(fin.break_even_analysis, 'break_even_months') || extractVal(fin.break_even_analysis?.break_even, 'break_even_timeline_months');
+  const invScore = extractVal(fin.funding_strategy, 'investor_readiness_score');
+  const gm = extractVal(fin.financial_metrics?.gross_margin, 'percentage', 'gross_margin_pct', 'pct') || extractVal(fin.financial_metrics, 'gross_margin_pct');
+  const ltvCac = extractVal(fin.financial_metrics?.customer_metrics, 'ltv_cac_ratio') || extractVal(fin.financial_metrics, 'ltv_cac_ratio');
+  const roi = extractVal(fin.financial_metrics?.roi_projection, 'three_year_roi_pct') || extractVal(fin.financial_metrics, 'roi_year_3_pct');
 
   return (
     <div className="card">
       <h2 className="font-semibold text-[var(--text-primary)] mb-3">Financial Feasibility (INR)</h2>
       <div className="grid grid-cols-4 gap-3 mb-4">
         <div className="kpi-card p-3">
-          <div className="kpi-value text-sm">₹{(fin.startup_costs?.total_initial_investment || 0).toLocaleString('en-IN')}</div>
+          <div className="kpi-value text-sm">{fmt(initInv)}</div>
           <div className="kpi-label">Initial Investment</div>
         </div>
         <div className="kpi-card p-3">
-          <div className="kpi-value text-sm text-emerald-400">₹{fin.revenue_projections?.year_1?.arr?.toLocaleString('en-IN') || '0'}</div>
+          <div className="kpi-value text-sm text-emerald-400">{fmt(y1Arr)}</div>
           <div className="kpi-label">Year 1 ARR</div>
         </div>
         <div className="kpi-card p-3">
-          <div className="kpi-value text-sm">{fin.break_even_analysis?.break_even_months || '-'}mo</div>
+          <div className="kpi-value text-sm">{beMonths || '-'}mo</div>
           <div className="kpi-label">Break-even</div>
         </div>
         <div className="kpi-card p-3">
-          <div className="kpi-value text-sm text-brand-400">{fin.funding_strategy?.investor_readiness_score || '-'}/10</div>
+          <div className="kpi-value text-sm text-brand-400">{invScore || '-'}/10</div>
           <div className="kpi-label">Investor Readiness</div>
         </div>
       </div>
@@ -229,7 +261,7 @@ function FinanceSection({ outputs, selectedOpp }: any) {
               {Object.entries(fin.funding_strategy.recommended_mix).map(([k, v]) => (
                 <div key={k} className="flex justify-between">
                   <span className="text-[var(--text-secondary)] capitalize">{k.replace(/_/g, ' ')}</span>
-                  <span className="text-[var(--text-primary)]">{v as string}</span>
+                  <span className="text-[var(--text-primary)]">{renderText(v)}</span>
                 </div>
               ))}
             </div>
@@ -239,9 +271,9 @@ function FinanceSection({ outputs, selectedOpp }: any) {
           <div>
             <p className="text-xs text-[var(--text-muted)] mb-1">Key Metrics</p>
             <div className="space-y-1">
-              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">Gross Margin</span><span className="text-[var(--text-primary)]">{fin.financial_metrics.gross_margin_pct}%</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">LTV:CAC</span><span className="text-[var(--text-primary)]">{fin.financial_metrics.ltv_cac_ratio}x</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">Year 3 ROI</span><span className="text-emerald-400">{fin.financial_metrics.roi_year_3_pct}%</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">Gross Margin</span><span className="text-[var(--text-primary)]">{gm || '-'}%</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">LTV:CAC</span><span className="text-[var(--text-primary)]">{ltvCac || '-'}x</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-secondary)]">Year 3 ROI</span><span className="text-emerald-400">{roi || '-'}%</span></div>
             </div>
           </div>
         )}
@@ -265,8 +297,8 @@ function FinanceSection({ outputs, selectedOpp }: any) {
           <div className="space-y-1 text-sm">
             {fin.startup_costs.cost_breakdown.map((c: any, i: number) => (
               <div key={i} className="flex justify-between">
-                <span className="text-[var(--text-secondary)]">{c.category}</span>
-                <span className="text-[var(--text-primary)]">₹{(c.amount || 0).toLocaleString('en-IN')}</span>
+                <span className="text-[var(--text-secondary)]">{c.category || c.item || '-'}</span>
+                <span className="text-[var(--text-primary)]">{fmt(c.amount || c.cost)}</span>
               </div>
             ))}
           </div>

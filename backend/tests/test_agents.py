@@ -70,8 +70,8 @@ def _unique_email():
 
 
 def _register_and_set_provider(email: str):
-    client.post("/api/auth/register", json={"email": email, "name": "Test", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Test", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
     client.patch("/api/auth/settings", json={
@@ -90,8 +90,8 @@ def auth_headers():
 
 def test_discover_opportunities_no_llm_config():
     email = _unique_email()
-    client.post("/api/auth/register", json={"email": email, "name": "Test", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Test", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 

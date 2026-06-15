@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Loader2, Shield, Check, RefreshCw } from 'lucide-react';
 import { agentsAPI } from '@/services/api';
@@ -8,8 +8,9 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-export default function IpAnalysisPage({ params }: { params: { id: string } }) {
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+export default function IpAnalysisPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
@@ -22,7 +23,7 @@ export default function IpAnalysisPage({ params }: { params: { id: string } }) {
     setProcessing('Analyzing IP');
     setProgressSteps([]);
     try {
-      await agentsAPI.ipStream(params.id, selectedOpp, (event) => {
+      await agentsAPI.ipStream(id, selectedOpp, (event) => {
         if (event.step === 'analyzing') {
           setProgressSteps((prev) => [...prev, event.message || 'Analyzing...']);
         } else if (event.step === 'complete') {
@@ -54,7 +55,7 @@ export default function IpAnalysisPage({ params }: { params: { id: string } }) {
           <Shield size={40} className="mx-auto mb-4 text-brand-400/50" />
           <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Run Opportunity Discovery First</h2>
           <p className="text-sm text-[var(--text-secondary)] mb-6">Complete the Opportunities stage to unlock IP analysis.</p>
-          <Link href={`/projects/${params.id}/opportunities`} className="btn-primary">
+          <Link href={`/projects/${id}/opportunities`} className="btn-primary">
             Go to Opportunities
           </Link>
         </div>
@@ -213,7 +214,7 @@ export default function IpAnalysisPage({ params }: { params: { id: string } }) {
                 </div>
               )}
 
-              <NextButton href={`/projects/${params.id}/strategy`} label="Next: Business Strategy" />
+              <NextButton href={`/projects/${id}/strategy`} label="Next: Business Strategy" />
             </>
           )}
         </div>

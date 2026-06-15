@@ -22,11 +22,11 @@ def test_health():
 
 def test_register_and_login():
     email = _unique_email("auth")
-    reg = client.post("/api/auth/register", json={"email": email, "name": "Auth Tester", "password": "pass123"})
+    reg = client.post("/api/auth/register", json={"email": email, "name": "Auth Tester", "password": "Pass1234"})
     assert reg.status_code == 200
     assert reg.json()["user"]["email"] == email
 
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     assert login.status_code == 200
     assert "access_token" in login.json()
     assert "refresh_token" in login.json()
@@ -34,23 +34,23 @@ def test_register_and_login():
 
 def test_register_duplicate():
     email = _unique_email("dup")
-    client.post("/api/auth/register", json={"email": email, "name": "Dup", "password": "pass123"})
-    resp = client.post("/api/auth/register", json={"email": email, "name": "Dup2", "password": "pass456"})
+    client.post("/api/auth/register", json={"email": email, "name": "Dup", "password": "Pass1234"})
+    resp = client.post("/api/auth/register", json={"email": email, "name": "Dup2", "password": "Pass5678"})
     assert resp.status_code == 400
     assert "already registered" in resp.json()["detail"].lower()
 
 
 def test_login_wrong_password():
     email = _unique_email("wrong")
-    client.post("/api/auth/register", json={"email": email, "name": "Wrong", "password": "correct"})
+    client.post("/api/auth/register", json={"email": email, "name": "Wrong", "password": "Correct1"})
     resp = client.post("/api/auth/login", json={"email": email, "password": "wrong"})
     assert resp.status_code == 401
 
 
 def test_me_endpoint():
     email = _unique_email("me")
-    client.post("/api/auth/register", json={"email": email, "name": "Me Tester", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Me Tester", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -65,8 +65,8 @@ def test_me_endpoint():
 
 def test_update_settings():
     email = _unique_email("settings")
-    client.post("/api/auth/register", json={"email": email, "name": "Settings", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Settings", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -80,8 +80,8 @@ def test_update_settings():
 
 def test_update_settings_with_api_key():
     email = _unique_email("apikey")
-    client.post("/api/auth/register", json={"email": email, "name": "API Key", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "API Key", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -94,8 +94,8 @@ def test_update_settings_with_api_key():
 
 def test_test_llm_endpoint():
     email = _unique_email("testllm")
-    client.post("/api/auth/register", json={"email": email, "name": "TestLLM", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "TestLLM", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -106,8 +106,8 @@ def test_test_llm_endpoint():
 
 def test_ollama_models_endpoint():
     email = _unique_email("ollama")
-    client.post("/api/auth/register", json={"email": email, "name": "Ollama", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Ollama", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -118,8 +118,8 @@ def test_ollama_models_endpoint():
 
 def test_refresh_token():
     email = _unique_email("refresh")
-    client.post("/api/auth/register", json={"email": email, "name": "Refresh", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Refresh", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     refresh_token = login.json()["refresh_token"]
 
     resp = client.post("/api/auth/refresh", json={"refresh_token": refresh_token})
@@ -134,8 +134,8 @@ def test_unauthorized_access():
 
 def test_delete_project():
     email = _unique_email("delete")
-    client.post("/api/auth/register", json={"email": email, "name": "Delete", "password": "pass123"})
-    login = client.post("/api/auth/login", json={"email": email, "password": "pass123"})
+    client.post("/api/auth/register", json={"email": email, "name": "Delete", "password": "Pass1234"})
+    login = client.post("/api/auth/login", json={"email": email, "password": "Pass1234"})
     token = login.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 

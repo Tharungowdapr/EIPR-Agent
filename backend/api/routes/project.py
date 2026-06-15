@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from core.database import get_db
@@ -11,14 +11,14 @@ router = APIRouter()
 
 
 class CreateProjectRequest(BaseModel):
-    title: str
-    domain: str
-    input_text: str
-    user_context: Optional[str] = ""
+    title: str = Field(..., min_length=1, max_length=200)
+    domain: str = Field(..., max_length=100)
+    input_text: str = Field(..., min_length=1, max_length=50000)
+    user_context: Optional[str] = Field("", max_length=5000)
 
 
 class UpdateOutputRequest(BaseModel):
-    output_type: str
+    output_type: str = Field(..., max_length=100)
     data: dict
 
 

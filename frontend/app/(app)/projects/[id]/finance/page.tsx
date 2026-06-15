@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, RefreshCw, BarChart3, PieChart, LineChart } from 'lucide-react';
 import { RevenueChart, QuarterlyChart, CostBreakdownChart } from '@/components/ui/FinancialCharts';
@@ -9,8 +9,41 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-export default function FinancePage({ params }: { params: { id: string } }) {
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+function renderText(val: any, fallback: string = ''): string {
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (val && typeof val === 'object') return JSON.stringify(val);
+  return fallback;
+}
+
+function parseNum(v: unknown): number {
+  if (v == null) return 0;
+  if (typeof v === 'number') return v;
+  let s = String(v).replace(/[₹,\s]/g, '');
+  const lower = s.toLowerCase();
+  if (lower.endsWith('cr')) return parseFloat(lower.replace('cr', '')) * 10000000;
+  if (lower.endsWith('l')) return parseFloat(lower.replace('l', '')) * 100000;
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function fmtNum(v: unknown): string {
+  const n = parseNum(v);
+  if (n >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
+  if (n >= 1e5) return `₹${(n / 1e5).toFixed(0)}L`;
+  return `₹${Math.round(n).toLocaleString('en-IN')}`;
+}
+
+function extractVal(obj: any, ...keys: string[]) {
+  for (const k of keys) {
+    if (obj?.[k] != null) return obj[k];
+  }
+  return null;
+}
+
+export default function FinancePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
@@ -24,7 +57,7 @@ export default function FinancePage({ params }: { params: { id: string } }) {
     setProcessing('Generating Finance');
     setProgressSteps([]);
     try {
-      await agentsAPI.financeStream(params.id, selectedOpp, (event) => {
+      await agentsAPI.financeStream(id, selectedOpp, (event) => {
         if (event.step === 'analyzing') {
           setProgressSteps((prev) => [...prev, event.message || 'Analyzing...']);
         } else if (event.step === 'complete') {
@@ -52,7 +85,7 @@ export default function FinancePage({ params }: { params: { id: string } }) {
       <Header project={project} title="Financial Feasibility" subtitle="Unit III · Startup costs, revenue, funding in INR" />
 
       {opportunities.length === 0 ? (
-        <PrereqCard href={`/projects/${params.id}/opportunities`} message="Complete Opportunities and Strategy first" />
+        <PrereqCard href={`/projects/${id}/opportunities`} message="Complete Opportunities and Strategy first" />
       ) : (
         <div className="space-y-6">
           <div className="flex items-center gap-3">
@@ -69,7 +102,7 @@ export default function FinancePage({ params }: { params: { id: string } }) {
               <TrendingUp size={40} className="mx-auto mb-4 text-brand-400/50" />
               <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Generate Strategy First</h2>
               <p className="text-sm text-[var(--text-secondary)] mb-6">Financial analysis is generated alongside business strategy.</p>
-              <Link href={`/projects/${params.id}/strategy`} className="btn-primary">Go to Strategy</Link>
+              <Link href={`/projects/${id}/strategy`} className="btn-primary">Go to Strategy</Link>
             </div>
           ) : !financial ? (
             <>
@@ -266,7 +299,7 @@ export default function FinancePage({ params }: { params: { id: string } }) {
                 </div>
               </div>
 
-              <NextButton href={`/projects/${params.id}/report`} label="Next: Final Report" />
+              <NextButton href={`/projects/${id}/report`} label="Next: Final Report" />
             </>
           )}
         </div>

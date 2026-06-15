@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Loader2, Lightbulb, Sparkles, Target, Globe, Brain, AlertCircle, RefreshCw, Columns, X } from 'lucide-react';
 import { agentsAPI } from '@/services/api';
@@ -8,8 +8,9 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-export default function OpportunitiesPage({ params }: { params: { id: string } }) {
-  const { project, outputs, loading, refresh } = useProjectData(params.id);
+export default function OpportunitiesPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { project, outputs, loading, refresh } = useProjectData(id);
   const { addToast } = useToastStore();
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
@@ -21,7 +22,7 @@ export default function OpportunitiesPage({ params }: { params: { id: string } }
     setProcessing('Discovering Opportunities');
     setProgressSteps([]);
     try {
-      await agentsAPI.discoverStream(params.id, (event) => {
+      await agentsAPI.discoverStream(id, (event) => {
         if (event.step === 'analyzing') {
           setProgressSteps((prev) => [...prev, event.message || 'Analyzing...']);
         } else if (event.step === 'complete') {
@@ -177,7 +178,7 @@ export default function OpportunitiesPage({ params }: { params: { id: string } }
             </div>
           )}
 
-          <NextButton href={`/projects/${params.id}/ip`} label="Next: IP Analysis" />
+          <NextButton href={`/projects/${id}/ip`} label="Next: IP Analysis" />
         </div>
       )}
     </div>

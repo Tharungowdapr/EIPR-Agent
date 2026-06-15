@@ -26,14 +26,10 @@ class Settings(BaseSettings):
 
     ENCRYPTION_KEY: str = "change-this-32-char-encryption-key!"
 
-    GEMINI_API_KEY: str = ""
-
     MLFLOW_TRACKING_URI: str = "http://localhost:5000"
     ENABLE_MLFLOW: bool = False
-    PROMETHEUS_PORT: int = 9090
 
     LOG_LEVEL: str = "INFO"
-    LOG_FILE: str = "eipr_agent.log"
 
     class Config:
         env_file = ".env"

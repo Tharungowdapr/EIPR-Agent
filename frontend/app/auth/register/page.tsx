@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -44,7 +45,12 @@ export default function RegisterPage() {
         </div>
         <div>
           <label className="label">Password</label>
-          <input type="password" className="input" placeholder="•••••••• (min 6 chars)" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          <div className="relative">
+            <input type={showPassword ? 'text' : 'password'} className="input pr-10 w-full" placeholder="•••••••• (min 6 chars)" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button type="submit" className="btn-primary w-full justify-center" disabled={loading}>

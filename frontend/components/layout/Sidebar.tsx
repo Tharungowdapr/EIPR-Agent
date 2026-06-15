@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, FolderOpen, Plus, Settings, LogOut,
-  Menu, X, User,
+  Menu, X, User, BookOpen,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import clsx from 'clsx';
@@ -13,6 +13,7 @@ import clsx from 'clsx';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/projects', label: 'Projects', icon: FolderOpen },
+  { href: '/ip-guide', label: 'IP Guide', icon: BookOpen },
 ];
 
 export function Sidebar() {

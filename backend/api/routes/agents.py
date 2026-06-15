@@ -1,8 +1,9 @@
 import json
 import logging
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -18,8 +19,9 @@ from models.project import Project, Output
 from agents.opportunity_scout.agent import run_opportunity_scout
 from agents.ip_strategist.agent import run_ip_strategist_full
 from agents.business_architect.agent import run_business_architect
+from agents.business_architect.agent_multi import run_business_architect_multi
 from agents.financial_analyst.agent import run_financial_analyst
-from agents.pedagogical_synthesizer.agent import run_pedagogical_synthesizer
+from agents.financial_analyst.agent_multi import run_financial_analyst_multi
 from agents.core.graph import build_agent_graph, create_initial_state
 
 router = APIRouter()
@@ -45,37 +47,37 @@ def _require_llm_config(user: User):
 
 
 class AgentRequest(BaseModel):
-    project_id: str
-    user_inputs: Optional[str] = ""
+    project_id: str = Field(..., max_length=100)
+    user_inputs: Optional[str] = Field("", max_length=10000)
 
 
 class IPAnalysisRequest(BaseModel):
-    project_id: str
-    opportunity_index: int = 0
-    user_inputs: Optional[str] = ""
+    project_id: str = Field(..., max_length=100)
+    opportunity_index: int = Field(default=0, ge=0, le=50)
+    user_inputs: Optional[str] = Field("", max_length=10000)
 
 
 class BusinessPlanRequest(BaseModel):
-    project_id: str
-    opportunity_index: int = 0
-    user_inputs: Optional[str] = ""
+    project_id: str = Field(..., max_length=100)
+    opportunity_index: int = Field(default=0, ge=0, le=50)
+    user_inputs: Optional[str] = Field("", max_length=10000)
 
 
 class FinancialRequest(BaseModel):
-    project_id: str
-    opportunity_index: int = 0
-    user_inputs: Optional[str] = ""
+    project_id: str = Field(..., max_length=100)
+    opportunity_index: int = Field(default=0, ge=0, le=50)
+    user_inputs: Optional[str] = Field("", max_length=10000)
 
 
 class ReportRequest(BaseModel):
-    project_id: str
-    user_inputs: Optional[str] = ""
-    report_template: Optional[str] = "academic"
+    project_id: str = Field(..., max_length=100)
+    user_inputs: Optional[str] = Field("", max_length=10000)
+    report_template: Optional[str] = Field("academic", max_length=50)
 
 
 class LangGraphRequest(BaseModel):
-    project_id: str
-    user_inputs: Optional[str] = ""
+    project_id: str = Field(..., max_length=100)
+    user_inputs: Optional[str] = Field("", max_length=10000)
 
 
 @router.post("/discover-opportunities")
@@ -151,15 +153,18 @@ async def generate_business_plan(body: BusinessPlanRequest, current_user: User =
         project.current_stage = "strategy"
         db.commit()
 
-        fin_result = await run_financial_analyst(
-            opportunity_str,
-            json.dumps(result.get("business_plan", {}).get("business_model", {})),
-            json.dumps(result.get("business_plan", {}).get("market_analysis", {})),
-            body.user_inputs or "", llm
-        )
-        _save_output(db, project.id, f"financial_{body.opportunity_index}", fin_result)
-
-        return {"project_id": project.id, "business_plan": result, "financial_analysis": fin_result}
+        try:
+            fin_result = await run_financial_analyst(
+                opportunity_str,
+                json.dumps(result.get("business_plan", {}).get("business_model", {})),
+                json.dumps(result.get("business_plan", {}).get("market_analysis", {})),
+                body.user_inputs or "", llm
+            )
+            _save_output(db, project.id, f"financial_{body.opportunity_index}", fin_result)
+            return {"project_id": project.id, "business_plan": result, "financial_analysis": fin_result}
+        except Exception as fin_e:
+            logger.warning(f"Financial analysis failed (business plan saved): {fin_e}")
+            return {"project_id": project.id, "business_plan": result, "financial_analysis": None, "financial_error": str(fin_e)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Business plan generation failed: {str(e)}")
 
@@ -208,9 +213,18 @@ async def generate_report(body: ReportRequest, current_user: User = Depends(get_
     llm = await build_llm_client_for_user(current_user)
 
     try:
-        result = await run_pedagogical_synthesizer(
-            project.domain, opportunities, ip_analysis, business_plan, financial, llm, body.report_template
+        from agents.report_generator.agent import run_report_generator
+        result = await run_report_generator(
+            domain=project.domain,
+            description=project.input_text,
+            context=project.user_context or "",
+            opportunities=opportunities,
+            ip_analysis=ip_analysis,
+            business_plan=business_plan,
+            financial=financial,
+            llm=llm,
         )
+        result["template"] = body.report_template
         _save_output(db, project.id, "report", result)
         project.status = "done"
         project.current_stage = "report"
@@ -306,36 +320,61 @@ async def strategy_stream(project_id: str, opportunity_index: int = 0, current_u
     opportunity_str = json.dumps(opportunity)
 
     async def event_stream():
-        try:
-            yield _stream_yield("analyzing", "Crafting executive summary and company description...")
-            yield _stream_yield("analyzing", "Running SWOC analysis for Indian market...")
-            yield _stream_yield("analyzing", "Building 4Ps marketing strategy for India...")
-            yield _stream_yield("analyzing", "Setting growth strategy for Indian ecosystem...")
-            result = await run_business_architect(
-                opportunity_str, project.domain,
-                opportunity.get("target_customer", ""),
-                "", llm
-            )
-            _save_output(db, project.id, f"business_plan_{opportunity_index}", result)
-            project.current_stage = "strategy"
-            db.commit()
+        queue = asyncio.Queue()
+        result_container = {}
 
-            yield _stream_yield("analyzing", "Estimating startup costs in INR...")
-            yield _stream_yield("analyzing", "Projecting revenue for Year 1-3...")
-            yield _stream_yield("analyzing", "Building funding strategy with Indian sources...")
-            fin_result = await run_financial_analyst(
-                opportunity_str,
-                json.dumps(result.get("business_plan", {}).get("business_model", {})),
-                json.dumps(result.get("business_plan", {}).get("market_analysis", {})),
-                "", llm
-            )
-            _save_output(db, project.id, f"financial_{opportunity_index}", fin_result)
+        async def _progress(step: str):
+            await queue.put(("progress", f"Generating {step}..."))
 
-            yield _stream_yield("complete", "Strategy and financial analysis complete", {
-                "business_plan": result, "financial_analysis": fin_result
-            })
-        except Exception as e:
-            yield _stream_yield("error", str(e))
+        async def _generate():
+            try:
+                result = await run_business_architect_multi(
+                    opportunity_str, project.domain,
+                    opportunity.get("target_customer", ""),
+                    "", llm, on_step=_progress,
+                )
+                _save_output(db, project.id, f"business_plan_{opportunity_index}", result)
+                project.current_stage = "strategy"
+                db.commit()
+
+                try:
+                    fin_result = await run_financial_analyst_multi(
+                        opportunity_str,
+                        json.dumps(result.get("business_plan", {}).get("market_analysis", {})),
+                        json.dumps(result.get("business_plan", {}).get("market_analysis", {})),
+                        "", llm, on_step=_progress,
+                    )
+                    _save_output(db, project.id, f"financial_{opportunity_index}", fin_result)
+                    result_container["result"] = {
+                        "business_plan": result, "financial_analysis": fin_result
+                    }
+                except Exception as fin_e:
+                    logger.warning(f"Financial analysis failed (business plan saved): {fin_e}")
+                    result_container["result"] = {
+                        "business_plan": result, "financial_analysis": None, "financial_error": str(fin_e)
+                    }
+                await queue.put(("done", None))
+            except Exception as e:
+                logger.exception("Strategy generation failed")
+                await queue.put(("error", str(e)))
+
+        task = asyncio.create_task(_generate())
+
+        while True:
+            try:
+                kind, data = await asyncio.wait_for(queue.get(), timeout=30.0)
+                if kind == "progress":
+                    yield _stream_yield("analyzing", data)
+                elif kind == "done":
+                    yield _stream_yield("complete", "Strategy and financial analysis complete", result_container.get("result"))
+                    return
+                elif kind == "error":
+                    yield _stream_yield("error", data)
+                    return
+            except asyncio.TimeoutError:
+                if task.done():
+                    break
+                yield _stream_yield("analyzing", "Still generating...")
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -359,21 +398,44 @@ async def finance_stream(project_id: str, opportunity_index: int = 0, current_us
     opportunity = opps[opportunity_index]
 
     async def event_stream():
-        try:
-            yield _stream_yield("analyzing", "Estimating startup costs in INR...")
-            yield _stream_yield("analyzing", "Projecting revenue for Year 1-3...")
-            yield _stream_yield("analyzing", "Analyzing break-even metrics...")
-            yield _stream_yield("analyzing", "Building funding strategy with Indian sources...")
-            fin_result = await run_financial_analyst(
-                json.dumps(opportunity),
-                json.dumps(bp.get("business_plan", {}).get("business_model", {})),
-                json.dumps(bp.get("business_plan", {}).get("market_analysis", {})),
-                "", llm
-            )
-            _save_output(db, project.id, f"financial_{opportunity_index}", fin_result)
-            yield _stream_yield("complete", "Financial analysis complete", fin_result)
-        except Exception as e:
-            yield _stream_yield("error", str(e))
+        queue = asyncio.Queue()
+        result_container = {}
+
+        async def _progress(step: str):
+            await queue.put(("progress", f"Calculating {step}..."))
+
+        async def _generate():
+            try:
+                fin_result = await run_financial_analyst_multi(
+                    json.dumps(opportunity),
+                    json.dumps(bp.get("business_plan", {}).get("market_analysis", {})),
+                    json.dumps(bp.get("business_plan", {}).get("market_analysis", {})),
+                    "", llm, on_step=_progress,
+                )
+                _save_output(db, project.id, f"financial_{opportunity_index}", fin_result)
+                result_container["result"] = fin_result
+                await queue.put(("done", None))
+            except Exception as e:
+                logger.exception("Financial analysis failed")
+                await queue.put(("error", str(e)))
+
+        task = asyncio.create_task(_generate())
+
+        while True:
+            try:
+                kind, data = await asyncio.wait_for(queue.get(), timeout=30.0)
+                if kind == "progress":
+                    yield _stream_yield("analyzing", data)
+                elif kind == "done":
+                    yield _stream_yield("complete", "Financial analysis complete", result_container.get("result"))
+                    return
+                elif kind == "error":
+                    yield _stream_yield("error", data)
+                    return
+            except asyncio.TimeoutError:
+                if task.done():
+                    break
+                yield _stream_yield("analyzing", "Still generating...")
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -390,23 +452,54 @@ async def report_stream(project_id: str, report_template: str = "academic", curr
     llm = await build_llm_client_for_user(current_user)
 
     async def event_stream():
-        try:
-            yield _stream_yield("analyzing", "Synthesizing opportunity analysis into case study...")
-            yield _stream_yield("analyzing", "Mapping to EIPR curriculum Units I-V...")
-            yield _stream_yield("analyzing", "Drafting introduction and business strategy sections...")
-            yield _stream_yield("analyzing", "Compiling IP strategy and legal references...")
-            yield _stream_yield("analyzing", "Generating learning outcomes and discussion questions...")
-            result = await run_pedagogical_synthesizer(
-                project.domain, opportunities, ip_analysis, business_plan, financial, llm, report_template
-            )
-            result["template"] = report_template
-            _save_output(db, project.id, "report", result)
-            project.status = "done"
-            project.current_stage = "report"
-            db.commit()
-            yield _stream_yield("complete", "Report generation complete", result)
-        except Exception as e:
-            yield _stream_yield("error", str(e))
+        from agents.report_generator.agent import run_report_generator
+        queue = asyncio.Queue()
+        result_container = {}
+
+        async def _progress(section: str):
+            await queue.put(("progress", section))
+
+        async def _generate():
+            try:
+                result = await run_report_generator(
+                    domain=project.domain,
+                    description=project.input_text,
+                    context=project.user_context or "",
+                    opportunities=opportunities,
+                    ip_analysis=ip_analysis,
+                    business_plan=business_plan,
+                    financial=financial,
+                    llm=llm,
+                    on_step=_progress,
+                )
+                result["template"] = report_template
+                _save_output(db, project.id, "report", result)
+                project.status = "done"
+                project.current_stage = "report"
+                db.commit()
+                result_container["result"] = result
+                await queue.put(("done", None))
+            except Exception as e:
+                logger.exception("Report generation failed")
+                await queue.put(("error", str(e)))
+
+        task = asyncio.create_task(_generate())
+
+        while True:
+            try:
+                kind, data = await asyncio.wait_for(queue.get(), timeout=30.0)
+                if kind == "progress":
+                    yield _stream_yield("analyzing", f"Writing {data} section...")
+                elif kind == "done":
+                    yield _stream_yield("complete", "Report generation complete", result_container.get("result"))
+                    return
+                elif kind == "error":
+                    yield _stream_yield("error", data)
+                    return
+            except asyncio.TimeoutError:
+                if task.done():
+                    break
+                yield _stream_yield("analyzing", "Still generating...")
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -491,9 +584,53 @@ async def export_pdf(project_id: str, current_user: User = Depends(get_current_u
     if not report:
         raise HTTPException(status_code=400, detail="Generate report first")
 
-    from services.export_service import generate_pdf_html
-    html_content = generate_pdf_html(report)
+    try:
+        from services.export_service import generate_pdf_html
+        html_content = generate_pdf_html(report)
+        return await _render_pdf(html_content, "eipr_case_study.pdf")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("PDF export failed")
+        raise HTTPException(status_code=500, detail=f"PDF export failed: {str(e)}")
 
+
+@router.post("/{project_id}/export/full-pdf")
+async def export_full_pdf(project_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    project = _get_project(project_id, current_user.id, db)
+    project_dict = {
+        "title": project.title,
+        "domain": project.domain,
+        "input_text": project.input_text,
+        "user_context": project.user_context,
+    }
+
+    try:
+        from services.export_service import generate_full_project_pdf_html
+        outputs = {}
+        for opt in ["opportunities", "report"]:
+            o = _get_output(db, project_id, opt)
+            if o:
+                outputs[opt] = o
+        for idx in range(5):
+            for key in [f"ip_analysis_{idx}", f"business_plan_{idx}", f"financial_{idx}"]:
+                o = _get_output(db, project_id, key)
+                if o:
+                    outputs[key] = o
+
+        if not any(v for v in outputs.values()):
+            raise HTTPException(status_code=400, detail="No analysis data to export")
+
+        html_content = generate_full_project_pdf_html(project_dict, outputs)
+        return await _render_pdf(html_content, "eipr_full_project_report.pdf")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Full PDF export failed")
+        raise HTTPException(status_code=500, detail=f"Full PDF export failed: {str(e)}")
+
+
+async def _render_pdf(html_content: str, filename: str):
     try:
         from weasyprint import HTML
         import io
@@ -501,9 +638,13 @@ async def export_pdf(project_id: str, current_user: User = Depends(get_current_u
         return StreamingResponse(
             io.BytesIO(pdf_bytes),
             media_type="application/pdf",
-            headers={"Content-Disposition": "attachment; filename=eipr_case_study.pdf"},
+            headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
     except ImportError:
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html_content)
+    except Exception as e:
+        logger.warning(f"WeasyPrint failed ({e}), falling back to HTML")
         from fastapi.responses import HTMLResponse
         return HTMLResponse(content=html_content)
 

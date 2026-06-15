@@ -378,15 +378,20 @@ eipr-project/
 │   │       └── mlops.py             # GET /events, /agent-logs, /stats
 │   ├── agents/
 │   │   ├── opportunity_scout/
-│   │   │   └── agent.py             # Identifies 3-5 business opportunities with feasibility scoring
+│   │   │   ├── agent.py             # Identifies 3-5 business opportunities with feasibility scoring
+│   │   │   └── agent_multi.py       # 3-call multi-step deep analysis
 │   │   ├── ip_strategist/
-│   │   │   └── agent.py             # Patent, trademark, trade secret, copyright analysis
+│   │   │   ├── agent.py             # Patent, trademark, trade secret, copyright analysis
+│   │   │   └── agent_multi.py       # 4-call multi-step (steps 1-3 parallelized)
 │   │   ├── business_architect/
-│   │   │   └── agent.py             # SWOC, Porter's 5 Forces, 4Ps, STP, UVP, growth strategy
+│   │   │   ├── agent.py             # SWOC, Porter's 5 Forces, 4Ps, STP, UVP, growth strategy
+│   │   │   └── agent_multi.py       # 5-call multi-step (steps 1-2 parallelized)
 │   │   ├── financial_analyst/
-│   │   │   └── agent.py             # Cost, revenue, break-even, funding, metrics
-│   │   └── pedagogical_synthesizer/
-│   │       └── agent.py             # EIPR case study synthesis from all prior outputs
+│   │   │   ├── agent.py             # Cost, revenue, break-even, funding, metrics
+│   │   │   └── agent_multi.py       # 5-call multi-step (steps 1-2 parallelized)
+│   │   ├── _utils.py                # summarize_context() for inter-step context truncation
+│   │   └── report_generator/
+│   │       └── agent.py             # 8-step sequential EIPR case study report generator
 │   ├── core/
 │   │   ├── config.py                # Pydantic Settings — reads from .env
 │   │   ├── database.py              # SQLAlchemy engine, session, Base, get_db dependency

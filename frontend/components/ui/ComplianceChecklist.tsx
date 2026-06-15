@@ -138,18 +138,33 @@ const COMPLIANCE_DATA: Record<string, { category: string; items: { name: string;
   ],
 };
 
+const STORAGE_KEY = 'eipr-compliance-checked';
+
+function loadChecked(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch { return new Set(); }
+}
+
+function saveChecked(items: Set<string>) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(items))); } catch {}
+}
+
 export function ComplianceChecklist({ domain }: { domain: string }) {
   const domainLower = domain.toLowerCase();
   const matchedKey = Object.keys(COMPLIANCE_DATA).find(k => domainLower.includes(k)) || 'general';
   const sections = COMPLIANCE_DATA[matchedKey] || COMPLIANCE_DATA.general;
   const [openSection, setOpenSection] = useState<string | null>(sections[0]?.category || null);
-  const [checked, setChecked] = useState<Set<string>>(new Set());
+  const [checked, setChecked] = useState<Set<string>>(loadChecked);
 
   const toggleChecked = (name: string) => {
     setChecked(prev => {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
+      saveChecked(next);
       return next;
     });
   };

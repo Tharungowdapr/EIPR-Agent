@@ -5,6 +5,7 @@ from typing import Optional
 from core.database import get_db
 from core.security import get_current_user
 from models.user import User
+from models.project import Project
 from models.mlops import MLOpsEvent, AgentRunLog
 
 router = APIRouter()
@@ -18,7 +19,8 @@ async def get_mlops_events(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    query = db.query(MLOpsEvent)
+    user_project_ids = db.query(Project.id).filter(Project.user_id == current_user.id).subquery()
+    query = db.query(MLOpsEvent).filter(MLOpsEvent.project_id.in_(user_project_ids))
     if event_type:
         query = query.filter(MLOpsEvent.event_type == event_type)
     if project_id:
@@ -50,7 +52,8 @@ async def get_agent_logs(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    query = db.query(AgentRunLog)
+    user_project_ids = db.query(Project.id).filter(Project.user_id == current_user.id).subquery()
+    query = db.query(AgentRunLog).filter(AgentRunLog.project_id.in_(user_project_ids))
     if project_id:
         query = query.filter(AgentRunLog.project_id == project_id)
     if agent_name:
@@ -73,14 +76,16 @@ async def get_agent_logs(
 
 @router.get("/stats")
 async def get_mlops_stats(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    total_runs = db.query(func.count(AgentRunLog.id)).scalar() or 0
-    success_runs = db.query(func.count(AgentRunLog.id)).filter(AgentRunLog.status == "completed").scalar() or 0
-    failed_runs = db.query(func.count(AgentRunLog.id)).filter(AgentRunLog.status == "failed").scalar() or 0
-    avg_latency = db.query(func.avg(AgentRunLog.latency_ms)).scalar() or 0
-    avg_quality = db.query(func.avg(AgentRunLog.quality_score)).scalar() or 0
+    user_project_ids = db.query(Project.id).filter(Project.user_id == current_user.id).subquery()
+    total_runs = db.query(func.count(AgentRunLog.id)).filter(AgentRunLog.project_id.in_(user_project_ids)).scalar() or 0
+    success_runs = db.query(func.count(AgentRunLog.id)).filter(AgentRunLog.project_id.in_(user_project_ids), AgentRunLog.status == "completed").scalar() or 0
+    failed_runs = db.query(func.count(AgentRunLog.id)).filter(AgentRunLog.project_id.in_(user_project_ids), AgentRunLog.status == "failed").scalar() or 0
+    avg_latency = db.query(func.avg(AgentRunLog.latency_ms)).filter(AgentRunLog.project_id.in_(user_project_ids)).scalar() or 0
+    avg_quality = db.query(func.avg(AgentRunLog.quality_score)).filter(AgentRunLog.project_id.in_(user_project_ids)).scalar() or 0
 
     agent_breakdown = (
         db.query(AgentRunLog.agent_name, func.count(AgentRunLog.id), func.avg(AgentRunLog.latency_ms), func.avg(AgentRunLog.quality_score))
+        .filter(AgentRunLog.project_id.in_(user_project_ids))
         .group_by(AgentRunLog.agent_name)
         .all()
     )

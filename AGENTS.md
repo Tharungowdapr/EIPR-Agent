@@ -14,8 +14,11 @@ Multi-agent AI system for Entrepreneurship & IP Rights (EIPR) analysis. Backend 
 - **CSS**: Tailwind + custom design system in `frontend/styles/globals.css`. No CSS modules or styled-components.
 - **State**: Zustand stores in `frontend/store/`. `useAuthStore` handles auth state.
 - **API client**: Axios in `frontend/services/api.ts`. Auth interceptor reads from localStorage.
-- **Agents**: 5 agents in `backend/agents/`. Each has `agent.py` with a runner function. All async.
+- **Agents**: 4 agents (opportunity_scout, ip_strategist, business_architect, financial_analyst) + report_generator. Each has `agent.py` (single-step) and `agent_multi.py` (multi-step). All async.
 - **Encryption**: Fernet (via `cryptography`). Key derived from `ENCRYPTION_KEY` via SHA256 + base64.
+- **Report Generator**: 8-step sequential LLM calls at `backend/agents/report_generator/agent.py`.
+- **Multi-step agents**: Report-style agents with 3-5 sequential/parallel LLM calls for depth. Used by streaming endpoints.
+- **Export**: PDF (via WeasyPrint + markdown-to-HTML) and DOCX (via python-docx + markdown stripping). `markdown` library for markdown conversion.
 
 ## Common Tasks
 
@@ -34,6 +37,11 @@ Multi-agent AI system for Entrepreneurship & IP Rights (EIPR) analysis. Backend 
 2. Create `__init__.py` and `agent.py` with async runner function
 3. Export in `backend/agents/__init__.py`
 4. Add route in `backend/api/routes/agents.py`
+
+### Fixing PDF export markdown rendering
+- `backend/services/export_service.py` has `_md_to_html()` (block-level markdown → HTML) and `_md_inline()` (inline markdown → HTML)
+- All long-form text in reports uses `_md_to_html()` for proper bold/italic/list rendering in PDFs
+- DOCX export uses `_strip_markdown()` to remove markdown formatting characters
 
 ### Running tests
 ```bash
@@ -64,5 +72,10 @@ PRODUCT.md and DESIGN.md define the design system. Read them before any frontend
 
 - `backend/core/mcp_client.py` has placeholder MCP URLs — swap with real services in production
 - `backend/core/mlops.py` conditionally enables MLflow based on `ENABLE_MLFLOW` env var
-- Export service (`backend/services/export_service.py`) uses lazy imports for optional deps (python-docx, weasyprint)
+- Export service (`backend/services/export_service.py`) uses lazy imports for optional deps (python-docx, weasyprint, markdown)
 - Frontend `services/api.ts` redirects to `/auth/login` on 401 responses
+- Multi-step agents in `backend/agents/*/agent_multi.py` use `asyncio.gather()` for parallel independent steps
+- `backend/agents/_utils.py` has `summarize_context()` for truncating inter-step context (prevents token overflow)
+- Streaming endpoints use `asyncio.Queue` for per-step progress SSE events
+- Frontend financial charts (`FinancialCharts.tsx`) use `parseNum()` to handle Indian currency strings ("₹24L", "₹1.25 Cr")
+- Frontend strategy/finance pages use `renderText()`, `extractVal()`, `fmtNum()` defensive helpers for nested LLM output schemas

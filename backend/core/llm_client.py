@@ -1,8 +1,28 @@
 import httpx
 import json
+import logging
+import asyncio
 from typing import Optional, AsyncGenerator
 from enum import Enum
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception, RetryError
+from httpx import HTTPStatusError, RequestError
+
+logger = logging.getLogger(__name__)
+
+RETRYABLE_STATUSES = {429, 502, 503, 504}
+
+
+def _is_retryable_error(exc: BaseException) -> bool:
+    if isinstance(exc, RequestError):
+        return True
+    if isinstance(exc, HTTPStatusError):
+        return exc.response.status_code in RETRYABLE_STATUSES
+    return False
+
+
+def _log_retry(retry_state):
+    exc = retry_state.outcome.exception()
+    logger.warning(f"LLM call attempt {retry_state.attempt_number} failed: {type(exc).__name__}: {exc}")
 
 
 class LLMProvider(str, Enum):
@@ -73,8 +93,8 @@ class LLMClient:
         if base_url and self.provider == LLMProvider.OLLAMA:
             self.base_urls[LLMProvider.OLLAMA] = base_url.rstrip("/")
 
-    @retry(wait=wait_exponential(min=1, max=10), stop=stop_after_attempt(3))
-    async def complete(self, prompt: str, system: Optional[str] = None, json_mode: bool = False) -> str:
+    @retry(wait=wait_exponential(min=2, max=60), stop=stop_after_attempt(10), retry=retry_if_exception(_is_retryable_error), before_sleep=_log_retry)
+    async def _complete_with_retry(self, prompt: str, system: Optional[str] = None, json_mode: bool = False) -> str:
         dispatcher = {
             LLMProvider.OPENAI: self._openai_complete,
             LLMProvider.ANTHROPIC: self._anthropic_complete,
@@ -91,6 +111,25 @@ class LLMClient:
         if not handler:
             raise ValueError(f"Unsupported provider: {self.provider}")
         return await handler(prompt, system, json_mode)
+
+    async def complete(self, prompt: str, system: Optional[str] = None, json_mode: bool = False) -> str:
+        try:
+            return await self._complete_with_retry(prompt, system, json_mode)
+        except RetryError as e:
+            last = e.last_attempt
+            if last and last.failed:
+                exc = last.exception()
+                status = ""
+                if isinstance(exc, HTTPStatusError):
+                    status = f" (HTTP {exc.response.status_code})"
+                logger.error(f"LLM call failed after 10 retries{status}: {exc}")
+                msg = f"AI provider ({self.provider}) unavailable after 10 retries{status}. "
+                if self.provider.value == "groq":
+                    msg += "Groq free tier may be rate limited. Switch to Ollama in Settings > AI Settings, or wait and retry."
+                else:
+                    msg += "Check your provider status or switch to Ollama in Settings."
+                raise RuntimeError(msg) from None
+            raise
 
     async def stream_complete(self, prompt: str, system: Optional[str] = None, json_mode: bool = False) -> AsyncGenerator[str, None]:
         dispatcher = {
@@ -114,8 +153,8 @@ class LLMClient:
     async def _openai_complete(self, prompt: str, system: Optional[str], json_mode: bool) -> str:
         messages = []
         if system:
-            messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt})
+            messages.append({"role": "system", "content": system[:5000] if len(system) > 5000 else system})
+        messages.append({"role": "user", "content": prompt[:30000] if len(prompt) > 30000 else prompt})
         payload = {"model": self.model, "messages": messages, "temperature": self.temperature, "max_tokens": self.max_tokens}
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
@@ -123,6 +162,12 @@ class LLMClient:
         base = self.base_urls[self.provider]
         async with httpx.AsyncClient(timeout=120.0) as client:
             resp = await client.post(f"{base}/chat/completions", json=payload, headers=headers)
+            if resp.status_code == 429:
+                raise HTTPStatusError(f"Rate limited (429)", request=resp.request, response=resp)
+            if resp.status_code == 400:
+                body = await resp.aread()
+                logger.error(f"Groq 400 error: {body.decode('utf-8', errors='replace')[:500]}")
+                resp.raise_for_status()
             resp.raise_for_status()
             return resp.json()["choices"][0]["message"]["content"]
 
@@ -296,8 +341,11 @@ async def build_llm_client_for_user(user) -> LLMClient:
             api_key = _decrypt(raw_key)
         except Exception:
             import logging
-            logging.getLogger(__name__).warning(f"Failed to decrypt API key for {provider}, trying plaintext")
-            api_key = raw_key
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to decrypt API key for {provider}")
+            raise ValueError(
+                f"Stored API key for {provider} is corrupted. Please re-enter it in Settings > AI Settings."
+            )
     model = user.preferred_model or ""
     base_url = user.ollama_base_url or settings.OLLAMA_BASE_URL
     return LLMClient(provider=provider, api_key=api_key, model=model, base_url=base_url)

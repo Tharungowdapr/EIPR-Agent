@@ -20,8 +20,7 @@ export function useProjectData(id: string): ProjectData {
       const data = await projectsAPI.get(id);
       setProject(data);
       setOutputs(data.outputs || {});
-    } catch (err) {
-      console.error(err);
+    } catch {
     } finally {
       setLoading(false);
     }
