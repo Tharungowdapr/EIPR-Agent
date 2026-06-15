@@ -8,6 +8,24 @@ import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
+function mdToHtml(text: string): string {
+  let t = text;
+  t = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  t = t.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+  t = t.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1</em>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  t = t.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  t = t.replace(/^\[([^\]]+)\]\([^)]+\)/gm, '$1');
+  t = t.replace(/^- (.+)$/gm, '• $1');
+  t = t.replace(/\n{2,}/g, '</p><p>');
+  t = '<p>' + t + '</p>';
+  return t;
+}
+
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { project, outputs, loading, refresh } = useProjectData(id);
@@ -134,7 +152,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
           <div className="card">
             <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">{report.title}</h1>
-            <p className="text-sm text-[var(--text-secondary)] italic mb-4">{report.abstract}</p>
+            <div className="text-sm text-[var(--text-secondary)] italic mb-4 [&_strong]:text-brand-300" dangerouslySetInnerHTML={{ __html: mdToHtml(report.abstract || '') }} />
 
             {report.eipr_mapping && (
               <div className="flex flex-wrap gap-2 mb-6">
@@ -166,9 +184,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
                 <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
                   {section.replace(/_/g, ' ')}
                 </h2>
-                <div className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">
-                  {report.case_study[section]}
-                </div>
+                <div className="text-sm text-[var(--text-primary)] leading-relaxed [&_h1]:text-lg [&_h1]:font-bold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-3 [&_strong]:text-brand-300 [&_em]:text-[var(--text-secondary)] [&_code]:text-xs [&_code]:bg-[var(--bg-tertiary)] [&_code]:px-1 [&_code]:rounded [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: mdToHtml(report.case_study[section]) }} />
               </div>
             ) : null
           ))}
