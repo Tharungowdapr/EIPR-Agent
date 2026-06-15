@@ -22,6 +22,7 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,11 @@ export default function DashboardPage() {
     ]).then(([p, s]) => {
       setProjects(p);
       setStats(s);
-    }).catch(() => {});
+      setLoading(false);
+    }).catch((err: any) => {
+      setApiError(err?.response?.data?.detail || err?.message || 'Failed to load projects');
+      setLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -50,6 +55,12 @@ export default function DashboardPage() {
           Discover opportunities, analyze IP, and generate EIPR case studies.
         </p>
       </div>
+
+      {apiError && (
+        <div className="mb-6 card bg-red-600/[0.06] border border-red-600/20">
+          <p className="text-sm text-red-400">{apiError}</p>
+        </div>
+      )}
 
       {mounted && user && !user.has_api_keys && (
         <div className="mb-6 card bg-amber-600/[0.06] border border-amber-600/20">

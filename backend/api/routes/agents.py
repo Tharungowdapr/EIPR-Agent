@@ -196,6 +196,8 @@ async def generate_financial_analysis(body: FinancialRequest, current_user: User
             body.user_inputs or "", llm
         )
         _save_output(db, project.id, f"financial_{body.opportunity_index}", fin_result)
+        project.current_stage = "finance"
+        db.commit()
         return {"project_id": project.id, "financial_analysis": fin_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Financial analysis failed: {str(e)}")
@@ -413,6 +415,8 @@ async def finance_stream(project_id: str, opportunity_index: int = 0, current_us
                     "", llm, on_step=_progress,
                 )
                 _save_output(db, project.id, f"financial_{opportunity_index}", fin_result)
+                project.current_stage = "finance"
+                db.commit()
                 result_container["result"] = fin_result
                 await queue.put(("done", None))
             except Exception as e:

@@ -217,7 +217,7 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
                 </div>
               )}
 
-              <NextButton href={`/projects/${id}/report`} label="Next: Final Report" />
+              <NextButton href={`/projects/${id}/finance`} label="Next: Financial Analysis" />
             </>
           )}
         </div>
