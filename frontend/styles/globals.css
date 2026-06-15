@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0f0f13;
+  --bg-secondary: #16161d;
+  --bg-tertiary: #1c1c26;
+  --bg-hover: #23232f;
+  --bg-card: #1a1a24;
+  --border: #2a2a3a;
+  --border-light: #35354a;
+  --text-primary: #f1f1f7;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6b6b80;
+  --brand: #eab308;
+  --brand-light: #fef08a;
+  --brand-dark: #ca8a04;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --purple: #a855f7;
+  --emerald: #10b981;
+  --orange: #f97316;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 transition-all duration-200;
+  }
+
+  .card-hover {
+    @apply card hover:border-[var(--border-light)] hover:bg-[var(--bg-hover)] cursor-pointer;
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-500 active:bg-brand-700 shadow-lg shadow-brand-600/20;
+  }
+
+  .btn-secondary {
+    @apply btn border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+  }
+
+  .btn-ghost {
+    @apply btn text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+  }
+
+  .btn-success {
+    @apply btn bg-emerald-600 text-white hover:bg-emerald-500;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-500;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500/50 transition-all;
+  }
+
+  .textarea {
+    @apply input min-h-[100px] resize-y;
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-brand {
+    @apply badge bg-brand-600/20 text-brand-400;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-600/20 text-emerald-400;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-600/20 text-yellow-400;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-600/20 text-red-400;
+  }
+
+  .badge-purple {
+    @apply badge bg-purple-600/20 text-purple-400;
+  }
+
+  .badge-orange {
+    @apply badge bg-orange-600/20 text-orange-400;
+  }
+
+  .sidebar-item {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+  }
+
+  .sidebar-item.active {
+    @apply bg-brand-600/15 text-brand-400 font-medium;
+  }
+
+  .section-title {
+    @apply text-lg font-semibold text-[var(--text-primary)];
+  }
+
+  .section-desc {
+    @apply text-sm text-[var(--text-secondary)] mb-4;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-[var(--text-secondary)] mb-1.5;
+  }
+
+  .step-indicator {
+    @apply flex items-center gap-1.5 text-xs font-medium;
+  }
+
+  .step-active {
+    @apply step-indicator text-brand-400;
+  }
+
+  .step-completed {
+    @apply step-indicator text-emerald-400;
+  }
+
+  .step-pending {
+    @apply step-indicator text-[var(--text-muted)];
+  }
+
+  .tab {
+    @apply px-4 py-2.5 text-sm font-medium rounded-lg transition-all cursor-pointer;
+  }
+
+  .tab-active {
+    @apply tab bg-brand-600/20 text-brand-400;
+  }
+
+  .tab-inactive {
+    @apply tab text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+  }
+
+  .kpi-card {
+    @apply card text-center;
+  }
+
+  .kpi-value {
+    @apply text-2xl font-bold text-[var(--text-primary)];
+  }
+
+  .kpi-label {
+    @apply text-xs text-[var(--text-muted)] mt-1;
+  }
+
+  .editable-field {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .editable-field:hover .edit-overlay {
+    @apply opacity-100;
+  }
+
+  .edit-overlay {
+    @apply absolute top-2 right-2 opacity-0 transition-opacity;
+  }
+
+  .divider {
+    @apply border-t border-[var(--border)] my-6;
+  }
+
+  .glass {
+    @apply bg-[var(--bg-secondary)]/80 backdrop-blur-xl border border-[var(--border)];
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}

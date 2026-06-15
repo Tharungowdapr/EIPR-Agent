@@ -1,0 +1,11 @@
+node_modules/
+.venv/
+.next/
+__pycache__/
+*.pyc
+.DS_Store
+*.db
+.env
+.env.local
+.opencode/
+.impeccable/

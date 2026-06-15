@@ -1,0 +1,275 @@
+#!/usr/bin/env python3
+"""
+EIPR-Agent CLI — Run agents and manage projects from the terminal.
+
+Usage:
+  eipr login                         # Authenticate (stores token)
+  eipr projects                      # List your projects
+  eipr create <title> <domain>       # Create a new project
+  eipr run <project-id>              # Run the full pipeline (all 5 agents)
+  eipr discover <project-id>         # Run opportunity scout only
+  eipr ip <project-id> [index]       # Run IP analysis (default index=0)
+  eipr strategy <project-id> [index] # Run business + financial (default index=0)
+  eipr report <project-id>           # Generate final report
+  eipr export <project-id> docx      # Export as DOCX
+  eipr export <project-id> pdf       # Export as PDF
+  eipr settings                      # Show current LLM settings
+  eipr provider <name>               # Set LLM provider (ollama/openai/etc)
+  eipr logout                        # Clear stored credentials
+
+Environment variables:
+  EIPR_API_URL     (default: http://localhost:8000)
+  EIPR_TOKEN       (or use 'eipr login')
+"""
+
+import os
+import sys
+import json
+import httpx
+import getpass
+
+API_URL = os.environ.get("EIPR_API_URL", "http://localhost:8000")
+TOKEN_FILE = os.path.expanduser("~/.eipr_token")
+
+
+def _api():
+    """Return a base API URL and headers."""
+    headers = {"Content-Type": "application/json"}
+    token = os.environ.get("EIPR_TOKEN") or _load_token()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return API_URL, headers
+
+
+def _load_token():
+    try:
+        with open(TOKEN_FILE) as f:
+            return f.read().strip()
+    except:
+        return None
+
+
+def _save_token(token):
+    with open(TOKEN_FILE, "w") as f:
+        f.write(token)
+    os.chmod(TOKEN_FILE, 0o600)
+    print(f"Token saved to {TOKEN_FILE}")
+
+
+def _delete_token():
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+
+
+# ----- Auth -----
+
+def cmd_login():
+    email = input("Email: ")
+    password = getpass.getpass("Password: ")
+    resp = httpx.post(f"{API_URL}/api/auth/login", json={"email": email, "password": password})
+    if resp.status_code == 200:
+        data = resp.json()
+        _save_token(data["access_token"])
+        print(f"Logged in as {data['user']['name']} ({data['user']['email']})")
+    else:
+        print(f"Login failed: {resp.json().get('detail', resp.text)}")
+        sys.exit(1)
+
+
+def cmd_logout():
+    _delete_token()
+    print("Logged out")
+
+
+# ----- Projects -----
+
+def cmd_projects():
+    url, headers = _api()
+    resp = httpx.get(f"{url}/api/projects", headers=headers)
+    _check(resp)
+    projects = resp.json()
+    if not projects:
+        print("No projects found.")
+        return
+    print(f"{'ID':<40} {'TITLE':<30} {'STAGE':<15} {'UPDATED'}")
+    print("-" * 100)
+    for p in projects:
+        pid = p["id"][:36]
+        title = p["title"][:28]
+        stage = p.get("current_stage", "created")
+        updated = (p.get("updated_at") or p.get("created_at") or "")[:10]
+        print(f"{pid:<40} {title:<30} {stage:<15} {updated}")
+
+
+def cmd_create(title, domain, input_text=None, user_context=None):
+    url, headers = _api()
+    if not input_text:
+        print("Enter a description of your idea/domain (Ctrl+D to finish):")
+        input_text = sys.stdin.read().strip()
+    payload = {"title": title, "domain": domain, "input_text": input_text}
+    if user_context:
+        payload["user_context"] = user_context
+    resp = httpx.post(f"{url}/api/projects/", json=payload, headers=headers)
+    _check(resp)
+    p = resp.json()
+    print(f"Created project: {p['title']} (ID: {p['id']})")
+    return p["id"]
+
+
+# ----- Agents -----
+
+def cmd_discover(project_id):
+    print("Running opportunity scout...")
+    url, headers = _api()
+    resp = httpx.post(f"{url}/api/agents/discover-opportunities", json={"project_id": project_id}, headers=headers, timeout=180)
+    _check(resp)
+    data = resp.json()
+    opps = data.get("opportunities", {}).get("opportunities", [])
+    print(f"Found {len(opps)} opportunities:\n")
+    for i, opp in enumerate(opps):
+        score = opp.get("feasibility_score", "?")
+        print(f"  [{i}] {opp.get('title', 'Untitled')} (Score: {score}/10)")
+        print(f"       {opp.get('description', '')[:100]}")
+        print()
+
+
+def cmd_ip(project_id, index=0):
+    print(f"Running IP analysis for opportunity #{index}...")
+    url, headers = _api()
+    resp = httpx.post(f"{url}/api/agents/analyze-ip", json={"project_id": project_id, "opportunity_index": index}, headers=headers, timeout=180)
+    _check(resp)
+    print("IP analysis completed.")
+
+
+def cmd_strategy(project_id, index=0):
+    print(f"Running business strategy + financial analysis for opportunity #{index}...")
+    url, headers = _api()
+    resp = httpx.post(f"{url}/api/agents/generate-business-plan", json={"project_id": project_id, "opportunity_index": index}, headers=headers, timeout=300)
+    _check(resp)
+    print("Strategy and financial analysis completed.")
+
+
+def cmd_report(project_id):
+    print("Generating final EIPR report...")
+    url, headers = _api()
+    resp = httpx.post(f"{url}/api/agents/generate-report", json={"project_id": project_id}, headers=headers, timeout=300)
+    _check(resp)
+    data = resp.json()
+    report = data.get("report", {})
+    print(f"Report generated: {report.get('title', 'Untitled')}")
+
+
+def cmd_run(project_id):
+    """Run the full pipeline sequentially."""
+    cmd_discover(project_id)
+    cmd_ip(project_id)
+    cmd_strategy(project_id)
+    cmd_report(project_id)
+    print("\n✅ Full pipeline complete!")
+
+
+def cmd_export(project_id, fmt="docx"):
+    print(f"Exporting as {fmt.upper()}...")
+    url, headers = _api()
+    resp = httpx.post(f"{url}/api/agents/{project_id}/export/{fmt}", headers=headers, timeout=60)
+    _check(resp)
+    filename = f"eipr_case_study.{fmt}"
+    with open(filename, "wb") as f:
+        f.write(resp.content)
+    print(f"Saved to {filename}")
+
+
+# ----- Settings -----
+
+def cmd_settings():
+    url, headers = _api()
+    resp = httpx.get(f"{url}/api/auth/me", headers=headers)
+    _check(resp)
+    s = resp.json()
+    print(f"Provider: {s.get('preferred_provider', 'ollama')}")
+    print(f"Model:    {s.get('preferred_model', 'default')}")
+    print(f"Ollama:   {s.get('ollama_base_url', 'http://localhost:11434')}")
+    print(f"API Keys: {'Configured' if s.get('has_api_keys') else 'None'}")
+    if s.get("providers_with_keys"):
+        for prov, has in s["providers_with_keys"].items():
+            if has:
+                print(f"  - {prov}: key saved")
+
+
+def cmd_set_provider(name):
+    url, headers = _api()
+    payload = {"preferred_provider": name}
+    resp = httpx.patch(f"{url}/api/auth/settings", json=payload, headers=headers)
+    _check(resp)
+    print(f"Provider set to '{name}'")
+
+
+# ----- Helpers -----
+
+def _check(resp):
+    if resp.status_code >= 400:
+        detail = resp.json().get("detail", resp.text)
+        print(f"Error ({resp.status_code}): {detail}")
+        sys.exit(1)
+
+
+def main():
+    args = sys.argv[1:]
+    if not args:
+        print(__doc__)
+        return
+
+    cmd = args[0]
+
+    if cmd == "login":
+        cmd_login()
+    elif cmd == "logout":
+        cmd_logout()
+    elif cmd == "projects":
+        cmd_projects()
+    elif cmd == "create":
+        if len(args) < 3:
+            print("Usage: eipr create <title> <domain>")
+            sys.exit(1)
+        cmd_create(args[1], args[2], args[3] if len(args) > 3 else None)
+    elif cmd == "run":
+        if len(args) < 2:
+            print("Usage: eipr run <project-id>")
+            sys.exit(1)
+        cmd_run(args[1])
+    elif cmd == "discover":
+        if len(args) < 2:
+            print("Usage: eipr discover <project-id>")
+            sys.exit(1)
+        cmd_discover(args[1])
+    elif cmd == "ip":
+        idx = int(args[2]) if len(args) > 2 else 0
+        cmd_ip(args[1], idx)
+    elif cmd == "strategy":
+        idx = int(args[2]) if len(args) > 2 else 0
+        cmd_strategy(args[1], idx)
+    elif cmd == "report":
+        if len(args) < 2:
+            print("Usage: eipr report <project-id>")
+            sys.exit(1)
+        cmd_report(args[1])
+    elif cmd == "export":
+        if len(args) < 3:
+            print("Usage: eipr export <project-id> <docx|pdf>")
+            sys.exit(1)
+        cmd_export(args[1], args[2])
+    elif cmd == "settings":
+        cmd_settings()
+    elif cmd == "provider":
+        if len(args) < 2:
+            print("Usage: eipr provider <name>")
+            sys.exit(1)
+        cmd_set_provider(args[1])
+    else:
+        print(f"Unknown command: {cmd}")
+        print(__doc__)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

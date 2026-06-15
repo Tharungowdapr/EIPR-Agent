@@ -1,0 +1,60 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Loader2 } from 'lucide-react';
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const register = useAuthStore((s) => s.register);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await register(name, email, password);
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err?.response?.data?.detail || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Create account</h1>
+      <p className="text-sm text-[var(--text-secondary)] mb-8">Start your EIPR analysis journey</p>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="label">Name</label>
+          <input type="text" className="input" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div>
+          <label className="label">Email</label>
+          <input type="email" className="input" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div>
+          <label className="label">Password</label>
+          <input type="password" className="input" placeholder="•••••••• (min 6 chars)" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+        </div>
+        {error && <p className="text-sm text-red-400">{error}</p>}
+        <button type="submit" className="btn-primary w-full justify-center" disabled={loading}>
+          {loading ? <Loader2 size={16} className="animate-spin" /> : null}
+          {loading ? 'Creating account...' : 'Create account'}
+        </button>
+      </form>
+      <p className="text-sm text-[var(--text-muted)] text-center mt-6">
+        Already have an account? <Link href="/auth/login" className="text-brand-400 hover:text-brand-300">Sign in</Link>
+      </p>
+    </div>
+  );
+}
