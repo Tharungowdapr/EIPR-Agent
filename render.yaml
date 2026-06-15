@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: eipr-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    repo: https://github.com/Tharungowdapr/EIPR-Agent
+    branch: main
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./eipr_agent.db
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: DEFAULT_LLM_PROVIDER
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: '["https://frontend-six-flax-42.vercel.app"]'
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ENABLE_MLFLOW
+        value: false
