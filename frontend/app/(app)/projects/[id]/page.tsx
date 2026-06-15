@@ -8,7 +8,7 @@ import {
   FileText, Check, Sparkles, Trash2, ArrowRight, Download,
 } from 'lucide-react';
 import { ComplianceChecklist } from '@/components/ui/ComplianceChecklist';
-import { projectsAPI } from '@/services/api';
+import { projectsAPI, agentsAPI } from '@/services/api';
 import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { formatDistanceToNow } from 'date-fns';
@@ -83,7 +83,7 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
   const downloadFullPdf = async () => {
     setExporting(true);
     try {
-      const blob = await projectsAPI.exportFullPdf(id);
+      const blob = await agentsAPI.exportFullPdf(id);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

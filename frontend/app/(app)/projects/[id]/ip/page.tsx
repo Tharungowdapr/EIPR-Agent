@@ -3,7 +3,7 @@
 import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Loader2, Shield, Check, RefreshCw, Download } from 'lucide-react';
-import { agentsAPI, projectsAPI } from '@/services/api';
+import { agentsAPI } from '@/services/api';
 import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
@@ -22,7 +22,7 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
   const downloadPdf = async () => {
     setExporting(true);
     try {
-      const blob = await projectsAPI.exportFullPdf(id);
+      const blob = await agentsAPI.exportFullPdf(id);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -33,7 +33,7 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
       URL.revokeObjectURL(url);
       addToast('PDF downloaded', 'success');
     } catch (err: any) {
-      addToast(err?.detail || 'Failed to export PDF', 'error');
+      addToast(err?.response?.data?.detail || 'Failed to export PDF', 'error');
     } finally {
       setExporting(false);
     }

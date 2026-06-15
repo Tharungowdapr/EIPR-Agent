@@ -166,6 +166,15 @@ export const projectsAPI = {
     const res = await api.delete(`/projects/${id}`);
     return res.data;
   },
+  exportFullPdf: async (project_id: string) => {
+    const res = await api.post(`/agents/${project_id}/export/full-pdf`, {}, { responseType: 'blob' });
+    if (res.data instanceof Blob && res.data.type === 'application/json') {
+      const text = await res.data.text();
+      const json = JSON.parse(text);
+      throw json;
+    }
+    return res.data;
+  },
 };
 
 export const agentsAPI = {
