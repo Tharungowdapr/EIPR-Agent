@@ -23,4 +23,5 @@ markdown==3.10.2
 langgraph
 langchain-core
 langchain-openai
+psycopg2-binary
 langchain-groq
