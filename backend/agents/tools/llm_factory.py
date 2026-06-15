@@ -9,9 +9,6 @@ def create_langchain_llm(provider: str, api_key: str = "", model: str = "", base
     from langchain_openai import ChatOpenAI
     from langchain_anthropic import ChatAnthropic
     from langchain_groq import ChatGroq
-    from langchain_google_genai import ChatGoogleGenerativeAI
-    from langchain_cohere import ChatCohere
-    from langchain_community.chat_models import ChatOllama
 
     provider = provider.lower()
     api_key = api_key or ""
@@ -37,11 +34,23 @@ def create_langchain_llm(provider: str, api_key: str = "", model: str = "", base
     elif provider == "groq":
         return ChatGroq(model=model, api_key=api_key, temperature=0.7)
     elif provider == "gemini":
-        return ChatGoogleGenerativeAI(model=model, api_key=api_key, temperature=0.7)
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            return ChatGoogleGenerativeAI(model=model, api_key=api_key, temperature=0.7)
+        except ImportError:
+            raise ValueError("Gemini provider requires: pip install langchain-google-genai")
     elif provider == "cohere":
-        return ChatCohere(model=model, api_key=api_key, temperature=0.7)
+        try:
+            from langchain_cohere import ChatCohere
+            return ChatCohere(model=model, api_key=api_key, temperature=0.7)
+        except ImportError:
+            raise ValueError("Cohere provider requires: pip install langchain-cohere")
     elif provider == "ollama":
-        return ChatOllama(model=model, base_url=base_url or "http://localhost:11434", temperature=0.7)
+        try:
+            from langchain_community.chat_models import ChatOllama
+            return ChatOllama(model=model, base_url=base_url or "http://localhost:11434", temperature=0.7)
+        except ImportError:
+            raise ValueError("Ollama provider requires: pip install langchain-community")
     elif provider == "openrouter":
         return ChatOpenAI(
             model=model,
