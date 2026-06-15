@@ -2,7 +2,6 @@ services:
   - type: web
     name: eipr-backend
     env: docker
-    dockerfilePath: ./backend/Dockerfile
     repo: https://github.com/Tharungowdapr/EIPR-Agent
     branch: main
     healthCheckPath: /api/health
