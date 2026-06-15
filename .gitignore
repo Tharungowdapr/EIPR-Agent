@@ -170,3 +170,4 @@ __marimo__/
 
 # Next.js
 .next/
+tsconfig.tsbuildinfo

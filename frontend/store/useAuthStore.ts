@@ -63,10 +63,14 @@ export const useAuthStore = create<AuthState>()(
       name: 'eipr-auth-storage',
       partialize: (state) => {
         const safeUser = state.user
-          ? { id: state.user.id, email: state.user.email, name: state.user.name,
+          ? {
+              id: state.user.id, email: state.user.email, name: state.user.name,
               preferred_provider: state.user.preferred_provider,
               preferred_model: state.user.preferred_model,
-              ollama_base_url: state.user.ollama_base_url }
+              ollama_base_url: state.user.ollama_base_url,
+              has_api_keys: state.user.has_api_keys,
+              providers_with_keys: state.user.providers_with_keys,
+            }
           : null;
         return { token: state.token, refresh_token: state.refresh_token, user: safeUser };
       },

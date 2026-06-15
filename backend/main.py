@@ -48,6 +48,13 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
+@app.get("/api/seed", tags=["Utility"])
+async def seed_demo_data():
+    from scripts.seed_demo import seed
+    result = seed()
+    return result
+
+
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(project.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(agents.router, prefix="/api/agents", tags=["AI Agents"])

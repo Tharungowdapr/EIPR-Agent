@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, FolderOpen, ChevronRight, Clock, Lightbulb, Shield, Briefcase, FileText, TrendingUp } from 'lucide-react';
+import { Plus, FolderOpen, ChevronRight, Clock, Lightbulb, Shield, Briefcase, FileText, TrendingUp, Settings, Key } from 'lucide-react';
 import { projectsAPI, mlopsAPI } from '@/services/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatDistanceToNow } from 'date-fns';
@@ -50,6 +50,27 @@ export default function DashboardPage() {
           Discover opportunities, analyze IP, and generate EIPR case studies.
         </p>
       </div>
+
+      {mounted && user && !user.has_api_keys && (
+        <div className="mb-6 card bg-amber-600/[0.06] border border-amber-600/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-600/20 flex-shrink-0 mt-0.5">
+                <Key size={18} className="text-amber-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-400 text-sm">Configure Your AI Provider</h3>
+                <p className="text-xs text-amber-400/70 mt-1 max-w-md">
+                  AI agents need an LLM provider to run. Add a free Groq API key to enable analysis and report generation.
+                </p>
+              </div>
+            </div>
+            <Link href="/settings/llm" className="btn-primary text-sm whitespace-nowrap flex-shrink-0 w-full sm:w-auto text-center">
+              <Settings size={14} /> Configure Now
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Link href="/projects/new" className="card-hover">
