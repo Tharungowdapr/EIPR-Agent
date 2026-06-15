@@ -1,0 +1,55 @@
+<svg viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="220">
+      <stop offset="0%" stop-color="#0f0f13"/>
+      <stop offset="100%" stop-color="#16161d"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="220" rx="12" fill="url(#bg)" stroke="#2a2a3a" stroke-width="1"/>
+
+  <text x="400" y="22" text-anchor="middle" fill="#6b6b80" font-size="9" font-family="Inter, sans-serif">Unit I &amp; II</text>
+  <text x="160" y="22" text-anchor="middle" fill="#6b6b80" font-size="9" font-family="Inter, sans-serif">Unit IV &amp; V</text>
+  <text x="640" y="22" text-anchor="middle" fill="#6b6b80" font-size="9" font-family="Inter, sans-serif">All Units</text>
+
+  <rect x="40" y="35" width="200" height="50" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="140" y="58" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Opportunity Scout</text>
+  <text x="140" y="73" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Market gaps &amp; rankings</text>
+
+  <rect x="300" y="35" width="200" height="50" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="400" y="58" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">IP Strategist</text>
+  <text x="400" y="73" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Patents &amp; Trademarks</text>
+
+  <rect x="560" y="35" width="200" height="50" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="660" y="58" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Report Generator</text>
+  <text x="660" y="73" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">EIPR case study</text>
+
+  <line x1="240" y1="60" x2="298" y2="60" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="298,57 304,60 298,63" fill="#fbbf24" opacity="0.6"/>
+  <line x1="500" y1="60" x2="558" y2="60" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="558,57 564,60 558,63" fill="#fbbf24" opacity="0.6"/>
+
+  <line x1="140" y1="85" x2="140" y2="110" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="137,110 140,116 143,110" fill="#fbbf24" opacity="0.6"/>
+  <line x1="400" y1="85" x2="400" y2="110" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="397,110 400,116 403,110" fill="#fbbf24" opacity="0.6"/>
+
+  <rect x="40" y="120" width="200" height="50" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="140" y="143" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Business Architect</text>
+  <text x="140" y="158" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">SWOC, Porter, 4Ps, STP</text>
+
+  <rect x="300" y="120" width="200" height="50" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="400" y="143" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Financial Analyst</text>
+  <text x="400" y="158" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Costs, Revenue, Funding</text>
+
+  <line x1="240" y1="145" x2="298" y2="145" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="298,142 304,145 298,148" fill="#fbbf24" opacity="0.6"/>
+
+  <path d="M 240 145 Q 270 145 270 120 Q 270 60 298 60" stroke="#6b6b80" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+  <text x="285" y="95" fill="#6b6b80" font-size="7" font-family="Inter, sans-serif">Unit II &amp; III</text>
+
+  <path d="M 400 170 Q 400 190 560 190 Q 640 190 658 85" stroke="#6b6b80" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+  <text x="560" y="202" text-anchor="middle" fill="#6b6b80" font-size="7" font-family="Inter, sans-serif">Unit III</text>
+
+  <text x="140" y="198" text-anchor="middle" fill="#6b6b80" font-size="7" font-family="Inter, sans-serif">Unit II &amp; III</text>
+</svg>

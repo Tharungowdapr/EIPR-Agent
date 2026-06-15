@@ -1,41 +1,89 @@
 # EIPR-Agent
 
-Multi-Agent AI System for Entrepreneurship & Intellectual Property Rights Analysis.
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11-blue?style=flat-square&logo=python&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white">
+  <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white">
+  <img alt="Vercel" src="https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white">
+  <img alt="Render" src="https://img.shields.io/badge/Render-46E3B7?style=flat-square&logo=render&logoColor=white">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white">
+  <img alt="Groq" src="https://img.shields.io/badge/Groq-10B981?style=flat-square&logo=groq&logoColor=white">
+  <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square">
+</p>
+
+<p align="center">
+  <b>Multi-Agent AI System for Entrepreneurship & Intellectual Property Rights Analysis</b>
+</p>
+
+<p align="center">
+  <a href="https://frontend-six-flax-42.vercel.app" target="_blank"><b>Live Demo</b></a> ·
+  <a href="https://eipr-agent.onrender.com/api/docs" target="_blank"><b>API Docs</b></a> ·
+  <a href="https://github.com/Tharungowdapr/EIPR-Agent" target="_blank"><b>GitHub</b></a>
+</p>
+
+---
 
 EIPR-Agent is an intelligent analysis platform that takes a business idea or domain description and runs it through **5 specialized AI agents** — each mapping to a unit in the EIPR (Entrepreneurship & IP Rights) curriculum. The output is a comprehensive case study covering opportunity discovery, IP strategy, business planning, financial feasibility, and academic synthesis.
 
+## Deployment
+
+| Service | URL | Stack |
+|---------|-----|-------|
+| **Frontend** | [https://frontend-six-flax-42.vercel.app](https://frontend-six-flax-42.vercel.app) | Next.js 16 on Vercel (free) |
+| **Backend API** | [https://eipr-agent.onrender.com](https://eipr-agent.onrender.com) | FastAPI on Render (free) |
+| **API Documentation** | [https://eipr-agent.onrender.com/api/docs](https://eipr-agent.onrender.com/api/docs) | Swagger UI |
+| **Database** | PostgreSQL on Render | Free tier, auto-provisioned |
+
+### Seeding demo data
+
+```bash
+curl https://eipr-agent.onrender.com/api/seed
+```
+
+Creates demo user `demo@eipr.dev` / `demo123456` with a fully populated sample project.
+
 ## What It Does
 
-1. You describe a domain or idea (e.g., "AI-powered healthcare diagnostics for rural India")
+1. Describe a domain or idea (e.g., "AI-powered healthcare diagnostics for rural India")
 2. The system runs it through 5 AI agents in sequence
 3. Each agent produces structured output (opportunities, IP analysis, business plan, financials, report)
-4. You can view, edit, and re-run any stage
+4. View, edit, and re-run any stage
 5. Export the final case study as DOCX or PDF
+
+## Screenshots
+
+> **Note:** Add screenshots here by taking captures of the live demo and placing them in a `docs/screenshots/` folder.
+
+| Page | Preview |
+|------|---------|
+| Landing Page | `![Landing](docs/screenshots/landing.png)` |
+| Dashboard | `![Dashboard](docs/screenshots/dashboard.png)` |
+| Project Hub | `![Project](docs/screenshots/project.png)` |
+| Agent Output | `![Agent](docs/screenshots/agent.png)` |
+| Report | `![Report](docs/screenshots/report.png)` |
 
 ## Architecture
 
-```
-┌─────────────┐     ┌──────────────┐     ┌──────────────────┐
-│  Frontend   │────▶│   Backend    │────▶│   LLM Provider   │
-│  Next.js 14 │     │  FastAPI     │     │  (Ollama/OpenAI/ │
-│  :3000      │     │  :8000       │     │   Anthropic etc) │
-└─────────────┘     └──────┬───────┘     └──────────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │   SQLite DB  │
-                    │  (local)     │
-                    └──────────────┘
-```
+<p align="center">
+  <img src="docs/architecture.svg" alt="EIPR-Agent Architecture" width="100%">
+</p>
 
-**How data flows:**
+### Data Flow
 
 1. User fills in a project form on the frontend → POST to backend API
-2. Backend stores project in SQLite, returns project ID
+2. Backend stores project in PostgreSQL, returns project ID
 3. User triggers each agent sequentially via the frontend UI
 4. Each agent calls the configured LLM provider with a specialized prompt
 5. Agent output (structured JSON) is saved to the database as project outputs
 6. Project detail page renders each stage's data from the saved outputs
 7. Final report can be exported as DOCX or PDF
+
+### How the Pipeline Works (5 EIPR Units)
+
+<p align="center">
+  <img src="docs/pipeline.svg" alt="EIPR Pipeline" width="90%">
+</p>
 
 **Optional infrastructure (Docker):**
 

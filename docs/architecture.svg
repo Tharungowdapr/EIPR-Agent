@@ -1,0 +1,92 @@
+<svg viewBox="0 0 900 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="400">
+      <stop offset="0%" stop-color="#0f0f13"/>
+      <stop offset="100%" stop-color="#16161d"/>
+    </linearGradient>
+    <linearGradient id="line1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="line2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="400" rx="12" fill="url(#bg)" stroke="#2a2a3a" stroke-width="1"/>
+
+  <text x="450" y="35" text-anchor="middle" fill="#f1f1f7" font-size="15" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent Architecture</text>
+
+  <rect x="25" y="55" width="260" height="130" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="155" y="80" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Frontend (Next.js 16)</text>
+  <text x="50" y="100" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">React 18 / TypeScript</text>
+  <text x="50" y="115" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Tailwind CSS / Zustand</text>
+  <text x="50" y="130" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Server + Client Components</text>
+  <text x="50" y="145" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Vercel (Production)</text>
+  <text x="50" y="165" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">https://frontend-six-flax-42.vercel.app</text>
+
+  <line x1="285" y1="120" x2="355" y2="120" stroke="url(#line1)" stroke-width="2" stroke-dasharray="4 3"/>
+  <polygon points="355,116 363,120 355,124" fill="#fbbf24" opacity="0.8"/>
+
+  <rect x="365" y="55" width="260" height="130" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="495" y="80" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Backend (FastAPI / Python 3.11)</text>
+  <text x="390" y="100" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">5 Specialized AI Agents</text>
+  <text x="390" y="115" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">MCP Orchestrator</text>
+  <text x="390" y="130" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">SQLAlchemy + PostgreSQL</text>
+  <text x="390" y="145" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">JWT Auth / Fernet Encryption</text>
+  <text x="390" y="165" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">https://eipr-agent.onrender.com</text>
+
+  <line x1="625" y1="120" x2="695" y2="120" stroke="url(#line1)" stroke-width="2" stroke-dasharray="4 3"/>
+  <polygon points="695,116 703,120 695,124" fill="#fbbf24" opacity="0.8"/>
+
+  <rect x="705" y="55" width="170" height="130" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="790" y="80" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">LLM Providers</text>
+  <text x="725" y="103" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">OpenAI / Anthropic</text>
+  <text x="725" y="118" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Groq (Production)</text>
+  <text x="725" y="133" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Gemini / Cohere</text>
+  <text x="725" y="148" fill="#a0a0b8" font-size="9" font-family="Inter, sans-serif">Ollama (Local)</text>
+
+  <rect x="25" y="210" width="850" height="170" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="450" y="235" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">5-Agent Pipeline (EIPR Curriculum Mapped)</text>
+
+  <line x1="60" y1="275" x2="195" y2="275" stroke="url(#line1)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="195,272 201,275 195,278" fill="#fbbf24" opacity="0.6"/>
+  <line x1="235" y1="275" x2="370" y2="275" stroke="url(#line1)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="370,272 376,275 370,278" fill="#fbbf24" opacity="0.6"/>
+  <line x1="410" y1="275" x2="545" y2="275" stroke="url(#line1)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="545,272 551,275 545,278" fill="#fbbf24" opacity="0.6"/>
+  <line x1="585" y1="275" x2="720" y2="275" stroke="url(#line1)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="720,272 726,275 720,278" fill="#fbbf24" opacity="0.6"/>
+
+  <rect x="60" y="255" width="140" height="40" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="130" y="280" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Opportunity Scout</text>
+
+  <rect x="235" y="255" width="140" height="40" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="305" y="280" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">IP Strategist</text>
+
+  <rect x="410" y="255" width="140" height="40" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="480" y="280" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Business Architect</text>
+
+  <rect x="585" y="255" width="140" height="40" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="655" y="280" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Financial Analyst</text>
+
+  <rect x="760" y="255" width="100" height="40" rx="8" fill="#d97706" fill-opacity="0.15" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="810" y="280" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">Report Gen.</text>
+
+  <text x="130" y="320" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Market gaps</text>
+  <text x="130" y="332" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Opportunities</text>
+
+  <text x="305" y="320" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Patents</text>
+  <text x="305" y="332" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Trademarks</text>
+
+  <text x="480" y="320" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">SWOC, Porter's</text>
+  <text x="480" y="332" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">4Ps, STP, UVP</text>
+
+  <text x="655" y="320" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Revenue, Costs</text>
+  <text x="655" y="332" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Break-even</text>
+
+  <text x="810" y="320" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">PDF / DOCX</text>
+  <text x="810" y="332" text-anchor="middle" fill="#6b6b80" font-size="8" font-family="Inter, sans-serif">Case Study</text>
+</svg>
