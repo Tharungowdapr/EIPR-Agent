@@ -1,0 +1,35 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="240" height="675" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="16" y="16" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="54" y="36" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="255" y="20" width="925" height="50" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="50" fill="#f1f1f7" font-size="16" font-weight="700" font-family="Inter, sans-serif">Business Strategy - SWOC Analysis</text>
+  <rect x="255" y="85" width="450" height="140" rx="10" fill="#1a1a24" stroke="#10b981" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="275" y="110" fill="#10b981" font-size="13" font-weight="600" font-family="Inter, sans-serif">Strengths</text>
+  <text x="275" y="133" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Strong AI/ML technical expertise</text>
+  <text x="275" y="151" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; First-mover in rural AI diagnostics</text>
+  <text x="275" y="169" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Low-cost edge deployment model</text>
+  <rect x="735" y="85" width="450" height="140" rx="10" fill="#1a1a24" stroke="#ef4444" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="755" y="110" fill="#ef4444" font-size="13" font-weight="600" font-family="Inter, sans-serif">Weaknesses</text>
+  <text x="755" y="133" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Limited clinical validation data</text>
+  <text x="755" y="151" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; High dependency on hardware</text>
+  <text x="755" y="169" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Regulatory compliance costs</text>
+  <rect x="255" y="240" width="450" height="140" rx="10" fill="#1a1a24" stroke="#3b82f6" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="275" y="265" fill="#3b82f6" font-size="13" font-weight="600" font-family="Inter, sans-serif">Opportunities</text>
+  <text x="275" y="288" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Government Ayushman Bharat scheme</text>
+  <text x="275" y="306" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Growing telemedicine adoption</text>
+  <text x="275" y="324" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Corporate wellness programs</text>
+  <rect x="735" y="240" width="450" height="140" rx="10" fill="#1a1a24" stroke="#fbbf24" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="755" y="265" fill="#fbbf24" font-size="13" font-weight="600" font-family="Inter, sans-serif">Challenges</text>
+  <text x="755" y="288" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Intense competition from established</text>
+  <text x="755" y="306" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Data privacy regulations (DPDP Act)</text>
+  <text x="755" y="324" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">&#8226; Infrastructure gaps in rural areas</text>
+  <rect x="255" y="395" width="925" height="100" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="420" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Porter's Five Forces</text>
+  <text x="275" y="445" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Recommended Strategy: Cost Leadership - Focus on affordable pricing for rural markets</text>
+  <rect x="255" y="510" width="925" height="60" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="540" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">4Ps, STP, and financial analysis available</text>
+  <rect x="1020" y="525" width="140" height="28" rx="6" fill="#d97706"/>
+  <text x="1090" y="544" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">Next: Finance</text>
+</svg>

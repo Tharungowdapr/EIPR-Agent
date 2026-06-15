@@ -1,0 +1,32 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="240" height="675" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="16" y="16" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="54" y="36" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="255" y="20" width="925" height="50" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="50" fill="#f1f1f7" font-size="16" font-weight="700" font-family="Inter, sans-serif">EIPR Case Study Report</text>
+  <rect x="255" y="85" width="925" height="60" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="110" fill="#f1f1f7" font-size="18" font-weight="700" font-family="Inter, sans-serif">AI-Powered Healthcare Diagnostics</text>
+  <text x="275" y="130" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">A Comprehensive EIPR Case Study</text>
+  <rect x="255" y="160" width="925" height="1" fill="#2a2a3a"/>
+  <text x="275" y="185" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">Abstract</text>
+  <text x="275" y="210" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">This case study examines the entrepreneurial opportunity of AI-powered healthcare diagnostics</text>
+  <text x="275" y="228" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">for rural India, analyzing market gaps, intellectual property landscape, business strategy,</text>
+  <text x="275" y="246" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">and financial feasibility within the EIPR framework.</text>
+  <rect x="255" y="260" width="925" height="1" fill="#2a2a3a"/>
+  <text x="275" y="285" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">1. Opportunity Analysis</text>
+  <text x="275" y="310" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Three key opportunities identified: AI Health Diagnostics (Score: 8.5/10), Rural Health</text>
+  <text x="275" y="328" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Kiosks (7.2/10), and Pharma Supply Chain (6.8/10). Top opportunity targets the</text>
+  <text x="275" y="346" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">500M underserved population with AI-driven early disease detection.</text>
+  <rect x="255" y="360" width="925" height="1" fill="#2a2a3a"/>
+  <text x="275" y="385" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">2. IP Analysis</text>
+  <text x="275" y="410" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">White space identified in edge-based AI diagnostics. Freedom to operate confirmed.</text>
+  <text x="275" y="428" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Trademark filing recommended under Class 9 and Class 44. Provisional patent</text>
+  <text x="275" y="446" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">filing planned for core ML algorithm.</text>
+  <rect x="255" y="460" width="925" height="1" fill="#2a2a3a"/>
+  <text x="275" y="485" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">3. Business Strategy</text>
+  <text x="275" y="510" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Cost leadership strategy recommended. Strong technical expertise and first-mover</text>
+  <text x="275" y="528" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">advantage offset regulatory compliance costs. Government scheme alignment with</text>
+  <text x="275" y="546" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Ayushman Bharat and Startup India initiatives.</text>
+  <text x="275" y="580" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">...</text>
+</svg>

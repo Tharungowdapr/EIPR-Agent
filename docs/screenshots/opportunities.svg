@@ -1,0 +1,45 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="240" height="675" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="16" y="16" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="54" y="36" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="12" y="65" width="216" height="36" rx="6" fill="#d97706" fill-opacity="0.15"/>
+  <text x="120" y="88" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600" font-family="Inter, sans-serif">Dashboard</text>
+  <rect x="255" y="20" width="925" height="50" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="50" fill="#f1f1f7" font-size="16" font-weight="700" font-family="Inter, sans-serif">Opportunity Scout - Opportunities</text>
+  <rect x="255" y="85" width="290" height="140" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="275" y="105" width="36" height="36" rx="8" fill="#d97706" fill-opacity="0.2"/>
+  <text x="293" y="129" text-anchor="middle" fill="#fbbf24" font-size="16" font-weight="700">1</text>
+  <text x="322" y="119" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">AI Health Diagnostics</text>
+  <text x="322" y="136" fill="#a0a0b8" font-size="10" font-family="Inter, sans-serif">HealthTech</text>
+  <text x="322" y="151" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Score: 8.5/10</text>
+  <rect x="275" y="165" width="80" height="22" rx="4" fill="#10b981" fill-opacity="0.15"/>
+  <text x="315" y="180" text-anchor="middle" fill="#10b981" font-size="10" font-family="Inter, sans-serif">High</text>
+  <rect x="570" y="85" width="290" height="140" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="590" y="105" width="36" height="36" rx="8" fill="#d97706" fill-opacity="0.2"/>
+  <text x="608" y="129" text-anchor="middle" fill="#fbbf24" font-size="16" font-weight="700">2</text>
+  <text x="637" y="119" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Rural Health Kiosks</text>
+  <text x="637" y="136" fill="#a0a0b8" font-size="10" font-family="Inter, sans-serif">HealthTech</text>
+  <text x="637" y="151" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Score: 7.2/10</text>
+  <rect x="590" y="165" width="80" height="22" rx="4" fill="#fbbf24" fill-opacity="0.15"/>
+  <text x="630" y="180" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="Inter, sans-serif">Medium</text>
+  <rect x="885" y="85" width="290" height="140" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="905" y="105" width="36" height="36" rx="8" fill="#d97706" fill-opacity="0.2"/>
+  <text x="923" y="129" text-anchor="middle" fill="#fbbf24" font-size="16" font-weight="700">3</text>
+  <text x="952" y="119" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Pharma Supply Chain</text>
+  <text x="952" y="136" fill="#a0a0b8" font-size="10" font-family="Inter, sans-serif">HealthTech</text>
+  <text x="952" y="151" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Score: 6.8/10</text>
+  <rect x="905" y="165" width="80" height="22" rx="4" fill="#fbbf24" fill-opacity="0.15"/>
+  <text x="945" y="180" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="Inter, sans-serif">Medium</text>
+  <rect x="255" y="240" width="925" height="200" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="265" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">Selected: AI Health Diagnostics</text>
+  <rect x="275" y="280" width="885" height="1" fill="#2a2a3a"/>
+  <text x="275" y="305" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Value Proposition</text>
+  <text x="275" y="325" fill="#f1f1f7" font-size="12" font-family="Inter, sans-serif">AI-powered diagnostic platform for early disease detection in underserved areas</text>
+  <text x="275" y="355" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Target Market</text>
+  <text x="275" y="375" fill="#f1f1f7" font-size="12" font-family="Inter, sans-serif">India - 500M underserved population, growing HealthTech market at 12% CAGR</text>
+  <rect x="255" y="460" width="925" height="60" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="490" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Select an opportunity and proceed to</text>
+  <rect x="490" y="478" width="120" height="28" rx="6" fill="#d97706"/>
+  <text x="550" y="497" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">Analyze IP</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="240" height="675" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="16" y="16" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="54" y="36" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="12" y="65" width="216" height="36" rx="6" fill="#d97706" fill-opacity="0.15"/>
+  <text x="120" y="88" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="600" font-family="Inter, sans-serif">Dashboard</text>
+  <rect x="12" y="109" width="216" height="36" rx="6" fill="transparent"/>
+  <text x="120" y="132" text-anchor="middle" fill="#6b6b80" font-size="12" font-family="Inter, sans-serif">Projects</text>
+  <rect x="12" y="153" width="216" height="36" rx="6" fill="transparent"/>
+  <text x="120" y="176" text-anchor="middle" fill="#6b6b80" font-size="12" font-family="Inter, sans-serif">Settings</text>
+  <rect x="255" y="20" width="925" height="56" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="52" fill="#f1f1f7" font-size="20" font-weight="700" font-family="Inter, sans-serif">Welcome back, User</text>
+  <rect x="255" y="88" width="925" height="56" rx="8" fill="#d97706" fill-opacity="0.06" stroke="#d97706" stroke-opacity="0.2" stroke-width="1"/>
+  <rect x="275" y="102" width="36" height="36" rx="8" fill="#d97706" fill-opacity="0.2"/>
+  <text x="293" y="126" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="700">!</text>
+  <text x="322" y="116" fill="#fbbf24" font-size="13" font-weight="600" font-family="Inter, sans-serif">Configure Your AI Provider</text>
+  <text x="322" y="133" fill="#fbbf24" fill-opacity="0.7" font-size="11" font-family="Inter, sans-serif">Add a free Groq API key to enable AI analysis</text>
+  <rect x="1020" y="100" width="140" height="32" rx="6" fill="#d97706"/>
+  <text x="1090" y="120" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">Configure Now</text>
+  <rect x="255" y="160" width="210" height="80" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="265" y="170" width="32" height="32" rx="6" fill="#d97706" fill-opacity="0.2"/>
+  <text x="281" y="190" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="700">+</text>
+  <text x="305" y="186" fill="#f1f1f7" font-size="12" font-weight="600" font-family="Inter, sans-serif">New Analysis</text>
+  <rect x="480" y="160" width="210" height="80" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="585" y="192" text-anchor="middle" fill="#f1f1f7" font-size="24" font-weight="700" font-family="Inter, sans-serif">0</text>
+  <text x="585" y="210" text-anchor="middle" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">Agent Runs</text>
+  <rect x="705" y="160" width="210" height="80" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="810" y="192" text-anchor="middle" fill="#f1f1f7" font-size="24" font-weight="700" font-family="Inter, sans-serif">0%</text>
+  <text x="810" y="210" text-anchor="middle" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">Success Rate</text>
+  <rect x="930" y="160" width="210" height="80" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="1035" y="192" text-anchor="middle" fill="#f1f1f7" font-size="24" font-weight="700" font-family="Inter, sans-serif">0</text>
+  <text x="1035" y="210" text-anchor="middle" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">Projects</text>
+  <text x="275" y="270" fill="#f1f1f7" font-size="15" font-weight="600" font-family="Inter, sans-serif">Recent Projects</text>
+  <text x="1135" y="270" text-anchor="end" fill="#fbbf24" font-size="11" font-family="Inter, sans-serif">View all</text>
+  <rect x="255" y="290" width="925" height="56" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="275" y="304" width="28" height="28" rx="6" fill="#d97706" fill-opacity="0.1"/>
+  <text x="289" y="323" text-anchor="middle" fill="#6b6b80" font-size="12">+</text>
+  <text x="315" y="323" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">No projects yet</text>
+  <rect x="255" y="360" width="925" height="120" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="580" y="380" width="32" height="32" rx="6" fill="#6b6b80" fill-opacity="0.2"/>
+  <text x="596" y="401" text-anchor="middle" fill="#6b6b80" font-size="16">?</text>
+  <text x="716" y="410" text-anchor="middle" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">Create your first EIPR analysis to get started</text>
+  <rect x="680" y="430" width="140" height="32" rx="6" fill="#d97706"/>
+  <text x="750" y="450" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">New Analysis</text>
+</svg>

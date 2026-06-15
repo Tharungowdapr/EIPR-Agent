@@ -1,0 +1,56 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="1200" height="56" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="20" y="14" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="58" y="34" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="1020" y="14" width="80" height="28" rx="6" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="1060" y="33" text-anchor="middle" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Sign In</text>
+  <rect x="1110" y="14" width="80" height="28" rx="6" fill="#d97706"/>
+  <text x="1150" y="33" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">Get Started</text>
+  <rect x="20" y="75" width="560" height="30" rx="15" fill="#d97706" fill-opacity="0.1" stroke="#d97706" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="300" y="94" text-anchor="middle" fill="#fbbf24" font-size="12" font-family="Inter, sans-serif">AI-Powered EIPR Analysis Platform</text>
+  <text x="20" y="145" fill="#f1f1f7" font-size="36" font-weight="700" font-family="Inter, sans-serif">Entrepreneurship &amp; IP Rights</text>
+  <text x="20" y="185" fill="#fbbf24" font-size="36" font-weight="700" font-family="Inter, sans-serif">Intelligent Analysis</text>
+  <text x="20" y="220" fill="#a0a0b8" font-size="16" font-family="Inter, sans-serif">Discover business opportunities, analyze IP landscapes, and generate</text>
+  <text x="20" y="242" fill="#a0a0b8" font-size="16" font-family="Inter, sans-serif">EIPR-aligned case studies — powered by multi-agent AI.</text>
+  <rect x="20" y="270" width="160" height="44" rx="8" fill="#d97706"/>
+  <text x="100" y="297" text-anchor="middle" fill="#fff" font-size="14" font-weight="600" font-family="Inter, sans-serif">Start Analyzing</text>
+  <rect x="195" y="270" width="120" height="44" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="255" y="297" text-anchor="middle" fill="#f1f1f7" font-size="14" font-family="Inter, sans-serif">Sign In</text>
+  <rect x="640" y="70" width="540" height="280" rx="12" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <circle cx="900" cy="210" r="100" fill="#d97706" fill-opacity="0.03"/>
+  <circle cx="750" cy="210" r="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.3"/>
+  <circle cx="1050" cy="210" r="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.3"/>
+  <circle cx="900" cy="180" r="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.3"/>
+  <circle cx="900" cy="240" r="30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.3"/>
+  <line x1="780" y1="210" x2="870" y2="210" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+  <line x1="930" y1="210" x2="1020" y2="210" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+  <rect x="20" y="360" width="1160" height="1" fill="#2a2a3a"/>
+  <text x="600" y="400" text-anchor="middle" fill="#f1f1f7" font-size="24" font-weight="700" font-family="Inter, sans-serif">How It Works</text>
+  <text x="600" y="422" text-anchor="middle" fill="#a0a0b8" font-size="13" font-family="Inter, sans-serif">Five specialized AI agents transform your idea into a structured EIPR case study</text>
+  <rect x="20" y="445" width="216" height="120" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="90" y="460" width="40" height="40" rx="8" fill="#d97706" fill-opacity="0.1"/>
+  <text x="110" y="485" text-anchor="middle" fill="#fbbf24" font-size="18" font-weight="600">1</text>
+  <text x="128" y="518" text-anchor="middle" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Describe Your Idea</text>
+  <text x="128" y="538" text-anchor="middle" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Enter your business domain</text>
+  <rect x="256" y="445" width="216" height="120" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="326" y="460" width="40" height="40" rx="8" fill="#d97706" fill-opacity="0.1"/>
+  <text x="346" y="485" text-anchor="middle" fill="#fbbf24" font-size="18" font-weight="600">2</text>
+  <text x="364" y="518" text-anchor="middle" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Opportunity Scout</text>
+  <text x="364" y="538" text-anchor="middle" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Market gap analysis</text>
+  <rect x="492" y="445" width="216" height="120" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="562" y="460" width="40" height="40" rx="8" fill="#d97706" fill-opacity="0.1"/>
+  <text x="582" y="485" text-anchor="middle" fill="#fbbf24" font-size="18" font-weight="600">3</text>
+  <text x="600" y="518" text-anchor="middle" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">IP Strategist</text>
+  <text x="600" y="538" text-anchor="middle" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">Patent &amp; trademark analysis</text>
+  <rect x="728" y="445" width="216" height="120" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="798" y="460" width="40" height="40" rx="8" fill="#d97706" fill-opacity="0.1"/>
+  <text x="818" y="485" text-anchor="middle" fill="#fbbf24" font-size="18" font-weight="600">4</text>
+  <text x="836" y="518" text-anchor="middle" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Strategy &amp; Finance</text>
+  <text x="836" y="538" text-anchor="middle" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">SWOC, 4Ps, projections</text>
+  <rect x="964" y="445" width="216" height="120" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="1034" y="460" width="40" height="40" rx="8" fill="#d97706" fill-opacity="0.1"/>
+  <text x="1054" y="485" text-anchor="middle" fill="#fbbf24" font-size="18" font-weight="600">5</text>
+  <text x="1072" y="518" text-anchor="middle" fill="#f1f1f7" font-size="13" font-weight="600" font-family="Inter, sans-serif">Report Generator</text>
+  <text x="1072" y="538" text-anchor="middle" fill="#6b6b80" font-size="10" font-family="Inter, sans-serif">EIPR case study export</text>
+</svg>

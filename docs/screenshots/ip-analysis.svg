@@ -1,0 +1,39 @@
+<svg viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="675" rx="8" fill="#0f0f13"/>
+  <rect x="0" y="0" width="240" height="675" rx="8" fill="#16161d" stroke="#2a2a3a" stroke-width="1"/>
+  <rect x="16" y="16" width="28" height="28" rx="6" fill="#d97706"/>
+  <text x="54" y="36" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">EIPR-Agent</text>
+  <rect x="255" y="20" width="925" height="50" rx="8" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="50" fill="#f1f1f7" font-size="16" font-weight="700" font-family="Inter, sans-serif">IP Strategist - Analysis</text>
+  <rect x="255" y="85" width="450" height="200" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="110" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">Patent Landscape</text>
+  <text x="275" y="135" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Existing patents in AI healthcare diagnostics</text>
+  <text x="275" y="160" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; US Patent 11,234,567 - ML-based diagnosis</text>
+  <text x="275" y="178" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; US Patent 11,345,678 - Remote patient monitoring</text>
+  <text x="275" y="196" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; US Patent 11,456,789 - AI radiology assistant</text>
+  <text x="275" y="220" fill="#fbbf24" font-size="11" font-weight="600" font-family="Inter, sans-serif">White Space: Edge-based diagnosis</text>
+  <rect x="735" y="85" width="450" height="200" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="755" y="110" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">Trademark Analysis</text>
+  <text x="755" y="135" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Available trademark classes for India</text>
+  <text x="755" y="160" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Class 9 - Software &amp; AI platforms</text>
+  <text x="755" y="178" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Class 44 - Medical services</text>
+  <text x="755" y="196" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Class 42 - R&amp;D services</text>
+  <rect x="755" y="215" width="120" height="26" rx="4" fill="#10b981" fill-opacity="0.15"/>
+  <text x="815" y="232" text-anchor="middle" fill="#10b981" font-size="10" font-family="Inter, sans-serif">Freedom to Operate</text>
+  <rect x="255" y="300" width="450" height="200" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="325" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">Trade Secrets</text>
+  <text x="275" y="350" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">Protectable know-how</text>
+  <text x="275" y="375" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; ML model training methodology</text>
+  <text x="275" y="393" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Patient data processing algorithms</text>
+  <text x="275" y="411" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Edge deployment optimization</text>
+  <rect x="735" y="300" width="450" height="200" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="755" y="325" fill="#f1f1f7" font-size="14" font-weight="600" font-family="Inter, sans-serif">IP Roadmap</text>
+  <text x="755" y="350" fill="#a0a0b8" font-size="11" font-family="Inter, sans-serif">6-month plan</text>
+  <text x="755" y="375" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Month 1-2: File provisional patent</text>
+  <text x="755" y="393" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Month 3: Trademark filing (Class 9)</text>
+  <text x="755" y="411" fill="#6b6b80" font-size="11" font-family="Inter, sans-serif">&#8226; Month 4-6: PCT international filing</text>
+  <rect x="255" y="520" width="925" height="50" rx="10" fill="#1a1a24" stroke="#2a2a3a" stroke-width="1"/>
+  <text x="275" y="550" fill="#a0a0b8" font-size="12" font-family="Inter, sans-serif">IP strategy complete for AI Health Diagnostics</text>
+  <rect x="1000" y="535" width="140" height="28" rx="6" fill="#d97706"/>
+  <text x="1070" y="554" text-anchor="middle" fill="#fff" font-size="11" font-weight="600" font-family="Inter, sans-serif">Next: Strategy</text>
+</svg>
