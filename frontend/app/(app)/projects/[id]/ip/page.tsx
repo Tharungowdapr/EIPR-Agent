@@ -2,8 +2,8 @@
 
 import { useState, use } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Loader2, Shield, Check, RefreshCw } from 'lucide-react';
-import { agentsAPI } from '@/services/api';
+import { ChevronLeft, ChevronRight, Loader2, Shield, Check, RefreshCw, Download } from 'lucide-react';
+import { agentsAPI, projectsAPI } from '@/services/api';
 import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
@@ -15,8 +15,29 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
   const [progressSteps, setProgressSteps] = useState<string[]>([]);
+  const [exporting, setExporting] = useState(false);
 
   const opportunities = outputs.opportunities?.opportunities || [];
+
+  const downloadPdf = async () => {
+    setExporting(true);
+    try {
+      const blob = await projectsAPI.exportFullPdf(id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${project.title.replace(/\s+/g, '_')}_full_report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      addToast('PDF downloaded', 'success');
+    } catch (err: any) {
+      addToast(err?.detail || 'Failed to export PDF', 'error');
+    } finally {
+      setExporting(false);
+    }
+  };
   const ipAnalysis = outputs[`ip_analysis_${selectedOpp}`];
 
   const runAgent = async () => {
@@ -97,10 +118,16 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
             <>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-[var(--text-secondary)]">Analysis for: <strong className="text-[var(--text-primary)]">{opportunities[selectedOpp]?.title}</strong></p>
-                <button onClick={runAgent} disabled={!!processing} className="btn-ghost text-xs">
-                  {processing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
-                  Re-analyze
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={downloadPdf} disabled={exporting} className="btn-ghost text-xs">
+                    {exporting ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
+                    PDF
+                  </button>
+                  <button onClick={runAgent} disabled={!!processing} className="btn-ghost text-xs">
+                    {processing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+                    Re-analyze
+                  </button>
+                </div>
               </div>
 
               {ipAnalysis.patent_analysis && (

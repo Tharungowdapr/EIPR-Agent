@@ -641,12 +641,12 @@ async def _render_pdf(html_content: str, filename: str):
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
     except ImportError:
+        logger.warning("WeasyPrint not installed, serving HTML instead")
         from fastapi.responses import HTMLResponse
         return HTMLResponse(content=html_content)
     except Exception as e:
-        logger.warning(f"WeasyPrint failed ({e}), falling back to HTML")
-        from fastapi.responses import HTMLResponse
-        return HTMLResponse(content=html_content)
+        logger.error(f"WeasyPrint PDF generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}. Ensure WeasyPrint dependencies are installed.")
 
 
 def _get_project(project_id: str, user_id: str, db: Session) -> Project:

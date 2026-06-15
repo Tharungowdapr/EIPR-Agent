@@ -2,9 +2,9 @@
 
 import { useState, use } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Loader2, TrendingUp, RefreshCw, BarChart3, PieChart, LineChart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, TrendingUp, RefreshCw, Download, BarChart3, PieChart, LineChart } from 'lucide-react';
 import { RevenueChart, QuarterlyChart, CostBreakdownChart } from '@/components/ui/FinancialCharts';
-import { agentsAPI } from '@/services/api';
+import { agentsAPI, projectsAPI } from '@/services/api';
 import { useToastStore } from '@/store/useToastStore';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
@@ -12,6 +12,7 @@ import { ProgressSteps } from '@/components/ui/ProgressSteps';
 function renderText(val: any, fallback: string = ''): string {
   if (typeof val === 'string') return val;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (Array.isArray(val)) return val.map(renderText).join(', ');
   if (val && typeof val === 'object') return JSON.stringify(val);
   return fallback;
 }
@@ -29,6 +30,7 @@ function parseNum(v: unknown): number {
 
 function fmtNum(v: unknown): string {
   const n = parseNum(v);
+  if (n === 0 && v != null && String(v).trim() !== '0') return String(v);
   if (n >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
   if (n >= 1e5) return `₹${(n / 1e5).toFixed(0)}L`;
   return `₹${Math.round(n).toLocaleString('en-IN')}`;
@@ -41,6 +43,13 @@ function extractVal(obj: any, ...keys: string[]) {
   return null;
 }
 
+function renderItem(val: any): string {
+  if (typeof val === 'string') return val;
+  if (val && typeof val === 'object' && val.name) return val.name;
+  if (val && typeof val === 'object' && val.scheme) return val.scheme;
+  return renderText(val);
+}
+
 export default function FinancePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { project, outputs, loading, refresh } = useProjectData(id);
@@ -48,10 +57,31 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
   const [processing, setProcessing] = useState('');
   const [selectedOpp, setSelectedOpp] = useState(0);
   const [progressSteps, setProgressSteps] = useState<string[]>([]);
+  const [exporting, setExporting] = useState(false);
 
   const opportunities = outputs.opportunities?.opportunities || [];
   const businessPlan = outputs[`business_plan_${selectedOpp}`];
   const financial = outputs[`financial_${selectedOpp}`];
+
+  const downloadPdf = async () => {
+    setExporting(true);
+    try {
+      const blob = await projectsAPI.exportFullPdf(id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${project.title.replace(/\s+/g, '_')}_full_report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      addToast('PDF downloaded', 'success');
+    } catch (err: any) {
+      addToast(err?.detail || 'Failed to export PDF', 'error');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const runAgent = async () => {
     setProcessing('Generating Finance');
@@ -127,22 +157,28 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                 <p className="text-sm text-[var(--text-secondary)]">
                   Finance for: <strong className="text-[var(--text-primary)]">{opportunities[selectedOpp]?.title}</strong>
                 </p>
-                <button onClick={runAgent} disabled={!!processing} className="btn-ghost text-xs">
-                  {processing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />} Re-run
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={downloadPdf} disabled={exporting} className="btn-ghost text-xs">
+                    {exporting ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
+                    PDF
+                  </button>
+                  <button onClick={runAgent} disabled={!!processing} className="btn-ghost text-xs">
+                    {processing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />} Re-run
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-4 gap-3">
                 <div className="kpi-card p-3">
-                  <div className="kpi-value text-sm">₹{(financial.startup_costs?.total_initial_investment || 0).toLocaleString('en-IN')}</div>
+                  <div className="kpi-value text-sm">{fmtNum(extractVal(financial.startup_costs, 'total_initial_investment', 'total'))}</div>
                   <div className="kpi-label">Initial Investment</div>
                 </div>
                 <div className="kpi-card p-3">
-                  <div className="kpi-value text-sm text-emerald-400">₹{financial.revenue_projections?.year_1?.arr?.toLocaleString('en-IN') || '0'}</div>
+                  <div className="kpi-value text-sm text-emerald-400">{fmtNum(financial.revenue_projections?.year_1?.arr)}</div>
                   <div className="kpi-label">Year 1 ARR</div>
                 </div>
                 <div className="kpi-card p-3">
-                  <div className="kpi-value text-sm">{financial.break_even_analysis?.break_even_months || '-'}mo</div>
+                  <div className="kpi-value text-sm">{extractVal(financial.break_even_analysis, 'break_even_months', 'break_even_timeline_months') || '-'}mo</div>
                   <div className="kpi-label">Break-even</div>
                 </div>
                 <div className="kpi-card p-3">
@@ -164,18 +200,18 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                     financial.startup_costs?.[key] !== undefined && (
                       <div key={key} className="flex justify-between">
                         <span className="text-[var(--text-secondary)]">{label}</span>
-                        <span className="text-[var(--text-primary)]">₹{Number(financial.startup_costs[key]).toLocaleString('en-IN')}</span>
+                        <span className="text-[var(--text-primary)]">{fmtNum(financial.startup_costs[key])}</span>
                       </div>
                     )
                   ))}
                   <div className="border-t border-[var(--border)] pt-2 flex justify-between font-semibold">
                     <span className="text-[var(--text-primary)]">Total Investment</span>
-                    <span className="text-brand-400">₹{Number(financial.startup_costs?.total_initial_investment || 0).toLocaleString('en-IN')}</span>
+                    <span className="text-brand-400">{fmtNum(financial.startup_costs?.total_initial_investment)}</span>
                   </div>
                   {financial.startup_costs?.monthly_burn_rate && (
                     <div className="flex justify-between text-xs text-[var(--text-muted)]">
                       <span>Monthly Burn Rate</span>
-                      <span>₹{Number(financial.startup_costs.monthly_burn_rate).toLocaleString('en-IN')}</span>
+                      <span>{fmtNum(financial.startup_costs.monthly_burn_rate)}</span>
                     </div>
                   )}
                 </div>
@@ -186,10 +222,11 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                 <div className="grid grid-cols-3 gap-4">
                   {['year_1', 'year_2', 'year_3'].map((y) => {
                     const data = financial.revenue_projections?.[y];
+                    const arr = data?.arr || data?.total_revenue || data?.projected_revenue;
                     return (
                       <div key={y} className="text-center">
                         <p className="text-xs text-[var(--text-muted)]">{y.replace('_', ' ').toUpperCase()}</p>
-                        <p className="text-lg font-bold text-[var(--text-primary)]">₹{data?.arr?.toLocaleString('en-IN') || '0'}</p>
+                        <p className="text-lg font-bold text-[var(--text-primary)]">{fmtNum(arr)}</p>
                         <p className="text-xs text-[var(--text-muted)]">ARR</p>
                       </div>
                     );
@@ -201,8 +238,8 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                     <div className="grid grid-cols-4 gap-2">
                       {financial.revenue_projections.year_1.quarterly_breakdown.map((q: any, i: number) => (
                         <div key={i} className="card p-2 text-center">
-                          <p className="text-[10px] text-[var(--text-muted)]">{q.q}</p>
-                          <p className="text-sm font-medium text-[var(--text-primary)]">₹{(q.revenue || 0).toLocaleString('en-IN')}</p>
+                          <p className="text-[10px] text-[var(--text-muted)]">{q.q || q.quarter || `Q${i + 1}`}</p>
+                          <p className="text-sm font-medium text-[var(--text-primary)]">{fmtNum(q.revenue || q.amount || q.projection)}</p>
                         </div>
                       ))}
                     </div>
@@ -220,7 +257,7 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                         {Object.entries(financial.funding_strategy.recommended_mix).map(([k, v]) => (
                           <div key={k} className="flex justify-between">
                             <span className="text-[var(--text-secondary)] capitalize">{k.replace(/_/g, ' ')}</span>
-                            <span className="text-[var(--text-primary)]">{v as string}</span>
+                            <span className="text-[var(--text-primary)]">{renderText(v)}</span>
                           </div>
                         ))}
                       </div>
@@ -229,7 +266,22 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                   {financial.funding_strategy?.funding_roadmap && (
                     <div>
                       <p className="text-xs text-[var(--text-muted)] mb-1">Funding Roadmap</p>
-                      <p className="text-sm text-[var(--text-primary)]">{financial.funding_strategy.funding_roadmap}</p>
+                      {Array.isArray(financial.funding_strategy.funding_roadmap) ? (
+                        <div className="space-y-2 text-sm">
+                          {financial.funding_strategy.funding_roadmap.map((step: any, i: number) => (
+                            <div key={i} className="p-2 bg-[var(--bg-tertiary)] rounded text-xs">
+                              {step.stage && <p className="font-medium text-[var(--text-primary)]">{step.stage}</p>}
+                              {step.milestone && <p className="text-[var(--text-muted)]">{step.milestone}</p>}
+                              {(step.source || step.amount) && (
+                                <p className="text-[var(--text-secondary)]">{step.source && `Source: ${step.source}`}{step.amount && ` · ${fmtNum(step.amount)}`}</p>
+                              )}
+                              {step.months && <p className="text-[var(--text-muted)]">Timeline: {step.months}{typeof step.months === 'number' ? ' months' : ''}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[var(--text-primary)]">{renderText(financial.funding_strategy.funding_roadmap)}</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -237,8 +289,8 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                   <div className="mt-3">
                     <p className="text-xs text-[var(--text-muted)] mb-1">Indian Grant Eligibility</p>
                     <div className="flex flex-wrap gap-1">
-                      {financial.funding_strategy.indian_grant_eligibility.map((g: string, i: number) => (
-                        <span key={i} className="badge text-xs bg-emerald-600/20 text-emerald-400">{g}</span>
+                      {financial.funding_strategy.indian_grant_eligibility.map((g: any, i: number) => (
+                        <span key={i} className="badge text-xs bg-emerald-600/20 text-emerald-400">{renderItem(g)}</span>
                       ))}
                     </div>
                   </div>
@@ -247,8 +299,8 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                   <div className="mt-2">
                     <p className="text-xs text-[var(--text-muted)] mb-1">Recommended Investors</p>
                     <div className="flex flex-wrap gap-1">
-                      {financial.funding_strategy.recommended_investors.map((inv: string, i: number) => (
-                        <span key={i} className="badge text-xs bg-brand-600/20 text-brand-400">{inv}</span>
+                      {financial.funding_strategy.recommended_investors.map((inv: any, i: number) => (
+                        <span key={i} className="badge text-xs bg-brand-600/20 text-brand-400">{renderItem(inv)}</span>
                       ))}
                     </div>
                   </div>
@@ -258,23 +310,23 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
               <div className="card">
                 <h2 className="font-semibold text-[var(--text-primary)] mb-3">Financial Metrics</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  {financial.financial_metrics?.gross_margin_pct !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">Gross Margin</span><p className="font-medium">{financial.financial_metrics.gross_margin_pct}%</p></div>
+                  {extractVal(financial.financial_metrics?.gross_margin, 'percentage', 'pct', 'gross_margin_pct') !== undefined && (
+                    <div><span className="text-xs text-[var(--text-muted)]">Gross Margin</span><p className="font-medium">{extractVal(financial.financial_metrics?.gross_margin, 'percentage', 'pct', 'gross_margin_pct')}%</p></div>
                   )}
                   {financial.financial_metrics?.cac !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">CAC</span><p className="font-medium">₹{Number(financial.financial_metrics.cac).toLocaleString('en-IN')}</p></div>
+                    <div><span className="text-xs text-[var(--text-muted)]">CAC</span><p className="font-medium">{fmtNum(financial.financial_metrics.cac)}</p></div>
                   )}
                   {financial.financial_metrics?.ltv !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">LTV</span><p className="font-medium">₹{Number(financial.financial_metrics.ltv).toLocaleString('en-IN')}</p></div>
+                    <div><span className="text-xs text-[var(--text-muted)]">LTV</span><p className="font-medium">{fmtNum(financial.financial_metrics.ltv)}</p></div>
                   )}
-                  {financial.financial_metrics?.ltv_cac_ratio !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">LTV:CAC</span><p className="font-medium">{financial.financial_metrics.ltv_cac_ratio}x</p></div>
+                  {extractVal(financial.financial_metrics?.customer_metrics, 'ltv_cac_ratio') || financial.financial_metrics?.ltv_cac_ratio !== undefined && (
+                    <div><span className="text-xs text-[var(--text-muted)]">LTV:CAC</span><p className="font-medium">{extractVal(financial.financial_metrics?.customer_metrics, 'ltv_cac_ratio') || financial.financial_metrics?.ltv_cac_ratio}x</p></div>
                   )}
-                  {financial.financial_metrics?.payback_period_months !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">Payback</span><p className="font-medium">{financial.financial_metrics.payback_period_months}mo</p></div>
+                  {extractVal(financial.financial_metrics, 'payback_period_months', 'payback_period') !== undefined && (
+                    <div><span className="text-xs text-[var(--text-muted)]">Payback</span><p className="font-medium">{extractVal(financial.financial_metrics, 'payback_period_months', 'payback_period')}mo</p></div>
                   )}
-                  {financial.financial_metrics?.roi_year_3_pct !== undefined && (
-                    <div><span className="text-xs text-[var(--text-muted)]">Year 3 ROI</span><p className="font-medium text-emerald-400">{financial.financial_metrics.roi_year_3_pct}%</p></div>
+                  {extractVal(financial.financial_metrics?.roi_projection, 'three_year_roi_pct') || financial.financial_metrics?.roi_year_3_pct !== undefined && (
+                    <div><span className="text-xs text-[var(--text-muted)]">Year 3 ROI</span><p className="font-medium text-emerald-400">{extractVal(financial.financial_metrics?.roi_projection, 'three_year_roi_pct') || financial.financial_metrics?.roi_year_3_pct}%</p></div>
                   )}
                   {financial.financial_metrics?.net_margin_year_1 !== undefined && (
                     <div><span className="text-xs text-[var(--text-muted)]">Y1 Margin</span><p className="font-medium">{financial.financial_metrics.net_margin_year_1}%</p></div>
@@ -286,7 +338,7 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                 {financial.financial_metrics?.tax_considerations && (
                   <div className="mt-3 p-3 bg-yellow-600/10 border border-yellow-600/30 rounded-lg">
                     <p className="text-xs text-yellow-400 font-medium">Tax Considerations</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{financial.financial_metrics.tax_considerations}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{renderText(financial.financial_metrics.tax_considerations)}</p>
                   </div>
                 )}
               </div>
