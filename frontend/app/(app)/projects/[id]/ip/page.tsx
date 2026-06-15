@@ -140,7 +140,7 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
                       <p className="text-xs text-[var(--text-secondary)]">{ipAnalysis.patent_analysis.section_3_considerations}</p>
                     </div>
                   )}
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     {ipAnalysis.patent_analysis.likely_cpc_codes?.length > 0 && (
                       <div>
                         <p className="text-xs text-[var(--text-muted)] mb-1">CPC Classifications</p>
@@ -161,7 +161,7 @@ export default function IpAnalysisPage({ params }: { params: Promise<{ id: strin
                   {ipAnalysis.patent_analysis.filing_strategy && (
                     <div className="mt-4 p-3 bg-brand-600/10 border border-brand-600/30 rounded-lg">
                       <p className="text-xs font-semibold text-brand-400 uppercase tracking-wider mb-2">Filing Strategy</p>
-                      <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                         <div><span className="text-xs text-[var(--text-muted)]">Type</span><p className="text-[var(--text-primary)]">{ipAnalysis.patent_analysis.filing_strategy.type}</p></div>
                         <div><span className="text-xs text-[var(--text-muted)]">Jurisdictions</span><p className="text-[var(--text-primary)]">{(ipAnalysis.patent_analysis.filing_strategy.jurisdictions || []).join(', ')}</p></div>
                         <div><span className="text-xs text-[var(--text-muted)]">Est. Cost</span><p className="text-[var(--text-primary)]">{ipAnalysis.patent_analysis.filing_strategy.estimated_cost_inr || ipAnalysis.patent_analysis.filing_strategy.timeline}</p></div>

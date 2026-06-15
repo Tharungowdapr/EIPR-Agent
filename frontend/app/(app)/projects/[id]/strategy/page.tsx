@@ -136,7 +136,7 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
               )}
 
               {businessPlan.strategic_analysis?.swoc && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Object.entries(businessPlan.strategic_analysis.swoc).map(([key, vals]: [string, any]) => (
                     <div key={key} className={`card p-3 ${key === 'strengths' ? 'border-emerald-600/20' : key === 'weaknesses' ? 'border-red-600/20' : key === 'opportunities' ? 'border-blue-600/20' : 'border-yellow-600/20'}`}>
                       <p className="text-xs font-semibold capitalize text-[var(--text-secondary)] mb-1">{key}</p>
@@ -178,7 +178,7 @@ export default function StrategyPage({ params }: { params: Promise<{ id: string 
                     ))}
                   </div>
                   {businessPlan.marketing_plan.stp && (
-                    <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                       <div><span className="text-xs text-[var(--text-muted)]">Segments</span><p className="text-[var(--text-primary)]">{(businessPlan.marketing_plan.stp.segments || []).join(', ')}</p></div>
                       <div><span className="text-xs text-[var(--text-muted)]">Target</span><p className="text-[var(--text-primary)]">{businessPlan.marketing_plan.stp.target}</p></div>
                       <div><span className="text-xs text-[var(--text-muted)]">Positioning</span><p className="text-[var(--text-primary)]">{businessPlan.marketing_plan.stp.positioning}</p></div>

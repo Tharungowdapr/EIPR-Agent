@@ -12,7 +12,7 @@ import { ProgressSteps } from '@/components/ui/ProgressSteps';
 function renderText(val: any, fallback: string = ''): string {
   if (typeof val === 'string') return val;
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
-  if (Array.isArray(val)) return val.map(renderText).join(', ');
+  if (Array.isArray(val)) return val.map(v => renderText(v)).join(', ');
   if (val && typeof val === 'object') return JSON.stringify(val);
   return fallback;
 }
@@ -168,7 +168,7 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="kpi-card p-3">
                   <div className="kpi-value text-sm">{fmtNum(extractVal(financial.startup_costs, 'total_initial_investment', 'total'))}</div>
                   <div className="kpi-label">Initial Investment</div>
@@ -219,7 +219,7 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
 
               <div className="card">
                 <h2 className="font-semibold text-[var(--text-primary)] mb-3">Revenue Projections</h2>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {['year_1', 'year_2', 'year_3'].map((y) => {
                     const data = financial.revenue_projections?.[y];
                     const arr = data?.arr || data?.total_revenue || data?.projected_revenue;
@@ -235,7 +235,7 @@ export default function FinancePage({ params }: { params: Promise<{ id: string }
                 {financial.revenue_projections?.year_1?.quarterly_breakdown && (
                   <div className="mt-4">
                     <p className="text-xs text-[var(--text-muted)] mb-2">Year 1 Quarterly</p>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {financial.revenue_projections.year_1.quarterly_breakdown.map((q: any, i: number) => (
                         <div key={i} className="card p-2 text-center">
                           <p className="text-[10px] text-[var(--text-muted)]">{q.q || q.quarter || `Q${i + 1}`}</p>

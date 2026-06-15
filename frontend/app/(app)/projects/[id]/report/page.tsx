@@ -105,7 +105,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
               Covers Indian IP law, Startup India policies, and India-specific business context.
             </p>
 
-            <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
               {TEMPLATES.map((t) => (
                 <button
                   key={t.id}

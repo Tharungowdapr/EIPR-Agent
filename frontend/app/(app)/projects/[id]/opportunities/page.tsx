@@ -95,7 +95,7 @@ export default function OpportunitiesPage({ params }: { params: Promise<{ id: st
                 <h2 className="font-semibold text-[var(--text-primary)]">Domain Analysis</h2>
               </div>
               <p className="text-sm text-[var(--text-primary)] leading-relaxed">{domainAnalysis.summary}</p>
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                 {domainAnalysis.current_market_landscape && (
                   <div>
                     <p className="text-xs text-[var(--text-muted)] mb-1">Current Market Landscape (India)</p>
@@ -152,7 +152,7 @@ export default function OpportunitiesPage({ params }: { params: Promise<{ id: st
                 <Brain size={16} className="text-purple-400" />
                 <h2 className="font-semibold text-[var(--text-primary)]">Entrepreneurial Insights</h2>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-[var(--text-muted)] mb-1">Traits Needed</p>
                   <div className="flex flex-wrap gap-1">
