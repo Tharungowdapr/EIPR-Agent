@@ -61,16 +61,16 @@ async def get_agent_logs(
     logs = query.order_by(desc(AgentRunLog.created_at)).limit(limit).all()
     return [
         {
-            "id": l.id,
-            "project_id": l.project_id,
-            "agent_name": l.agent_name,
-            "quality_score": l.quality_score,
-            "latency_ms": l.latency_ms,
-            "status": l.status,
-            "error": l.error,
-            "created_at": l.created_at.isoformat() if l.created_at else None,
+            "id": log.id,
+            "project_id": log.project_id,
+            "agent_name": log.agent_name,
+            "quality_score": log.quality_score,
+            "latency_ms": log.latency_ms,
+            "status": log.status,
+            "error": log.error,
+            "created_at": log.created_at.isoformat() if log.created_at else None,
         }
-        for l in logs
+        for log in logs
     ]
 
 

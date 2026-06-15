@@ -163,7 +163,7 @@ class LLMClient:
         async with httpx.AsyncClient(timeout=120.0) as client:
             resp = await client.post(f"{base}/chat/completions", json=payload, headers=headers)
             if resp.status_code == 429:
-                raise HTTPStatusError(f"Rate limited (429)", request=resp.request, response=resp)
+                raise HTTPStatusError("Rate limited (429)", request=resp.request, response=resp)
             if resp.status_code == 400:
                 body = await resp.aread()
                 logger.error(f"Groq 400 error: {body.decode('utf-8', errors='replace')[:500]}")
@@ -191,7 +191,7 @@ class LLMClient:
                             data = json.loads(line)
                             if data["choices"][0]["delta"].get("content"):
                                 yield data["choices"][0]["delta"]["content"]
-                        except:
+                        except Exception:
                             pass
 
     async def _anthropic_complete(self, prompt: str, system: Optional[str], json_mode: bool) -> str:
@@ -220,7 +220,7 @@ class LLMClient:
                             data = json.loads(line[6:])
                             if data.get("type") == "content_block_delta" and "text" in data.get("delta", {}):
                                 yield data["delta"]["text"]
-                        except:
+                        except Exception:
                             pass
 
     async def _gemini_complete(self, prompt: str, system: Optional[str], json_mode: bool) -> str:
@@ -252,7 +252,7 @@ class LLMClient:
                                 parts = data["candidates"][0].get("content", {}).get("parts", [])
                                 if parts and "text" in parts[0]:
                                     yield parts[0]["text"]
-                        except:
+                        except Exception:
                             pass
 
     async def _cohere_complete(self, prompt: str, system: Optional[str], json_mode: bool) -> str:
@@ -279,7 +279,7 @@ class LLMClient:
                             data = json.loads(line)
                             if data.get("event_type") == "text-generation":
                                 yield data["text"]
-                        except:
+                        except Exception:
                             pass
 
     async def _ollama_complete(self, prompt: str, system: Optional[str], json_mode: bool) -> str:
@@ -310,7 +310,7 @@ class LLMClient:
                             data = json.loads(line)
                             if "message" in data and "content" in data["message"]:
                                 yield data["message"]["content"]
-                        except:
+                        except Exception:
                             pass
 
     async def test_connection(self) -> dict:

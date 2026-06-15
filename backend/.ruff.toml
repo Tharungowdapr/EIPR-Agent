@@ -1,0 +1,14 @@
+target-version = "py311"
+line-length = 120
+
+[lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # line too long (pre-existing, mostly LLM prompts)
+    "F401",  # unused imports (pre-existing)
+    "F841",  # unused variables (pre-existing)
+    "E402",  # module level import not at top (pre-existing)
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["E722"]

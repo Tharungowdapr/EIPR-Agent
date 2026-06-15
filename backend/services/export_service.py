@@ -120,7 +120,7 @@ def generate_pdf_html(report: dict) -> str:
     for m in eipr_mapping:
         mapping_html += f"<h3>Unit {esc(str(m.get('unit', '')))}: {esc(str(m.get('topic', '')))}</h3>{_md_to_html(m.get('coverage', ''))}"
 
-    learning_html = "<ul>" + "".join(f"<li>{esc(l)}</li>" for l in learning) + "</ul>" if learning else ""
+    learning_html = "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in learning) + "</ul>" if learning else ""
     questions_html = "<ol>" + "".join(f"<li>{esc(q)}</li>" for q in questions) + "</ol>" if questions else ""
 
     return f"""<!DOCTYPE html>
