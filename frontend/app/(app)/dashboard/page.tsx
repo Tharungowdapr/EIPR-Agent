@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Plus, FolderOpen, ChevronRight, Clock, Lightbulb, Shield, Briefcase, FileText, TrendingUp, Settings, Key } from 'lucide-react';
+import { safeError } from '@/lib/utils';
 import { projectsAPI, mlopsAPI } from '@/services/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatDistanceToNow } from 'date-fns';
@@ -34,8 +35,7 @@ export default function DashboardPage() {
       setStats(s);
       setLoading(false);
     }).catch((err: any) => {
-      const detail = err?.response?.data?.detail || err?.message || 'Failed to load projects';
-      setApiError(typeof detail === 'string' ? detail : JSON.stringify(detail));
+      setApiError(safeError(err, 'Failed to load projects'));
       setLoading(false);
     });
   }, []);

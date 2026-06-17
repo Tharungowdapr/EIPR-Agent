@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
+import { safeError } from '@/lib/utils';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -24,7 +25,7 @@ export default function RegisterPage() {
       await register(name, email, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Registration failed');
+      setError(safeError(err, 'Registration failed'));
     } finally {
       setLoading(false);
     }
