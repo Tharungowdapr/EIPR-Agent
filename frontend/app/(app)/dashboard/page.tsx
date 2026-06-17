@@ -34,7 +34,8 @@ export default function DashboardPage() {
       setStats(s);
       setLoading(false);
     }).catch((err: any) => {
-      setApiError(err?.response?.data?.detail || err?.message || 'Failed to load projects');
+      const detail = err?.response?.data?.detail || err?.message || 'Failed to load projects';
+      setApiError(typeof detail === 'string' ? detail : JSON.stringify(detail));
       setLoading(false);
     });
   }, []);
