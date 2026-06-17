@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { projectsAPI } from '@/services/api';
 import { useToastStore } from '@/store/useToastStore';
-import { safeError } from '@/lib/utils';
 import { Loader2, Sparkles, FlaskConical, Layers } from 'lucide-react';
 
 const SAMPLE_TOPICS = [
@@ -90,7 +89,7 @@ export default function NewProjectPage() {
           router.push(`/projects/${created[created.length - 1]}`);
         }
       } catch (err: any) {
-        setError(safeError(err, `Batch creation failed after ${created.length} projects`));
+        setError(err?.response?.data?.detail || `Batch creation failed after ${created.length} projects`);
       } finally {
         setLoading(false);
       }
@@ -102,7 +101,7 @@ export default function NewProjectPage() {
         const project = await projectsAPI.create(title, domain, inputText, userContext || undefined);
         router.push(`/projects/${project.id}`);
       } catch (err: any) {
-        setError(safeError(err, 'Failed to create project'));
+        setError(err?.response?.data?.detail || 'Failed to create project');
       } finally {
         setLoading(false);
       }

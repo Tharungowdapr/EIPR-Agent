@@ -53,25 +53,15 @@ Creates demo user `demo@eipr.dev` / `demo123456` with a fully populated sample p
 
 ## Screenshots
 
-<p align="center">
-  <img src="docs/screenshots/landing.svg" alt="Landing Page" width="45%">
-  <img src="docs/screenshots/dashboard.svg" alt="Dashboard" width="45%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/project.svg" alt="Project Hub" width="45%">
-  <img src="docs/screenshots/opportunities.svg" alt="Opportunity Scout" width="45%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/ip-analysis.svg" alt="IP Analysis" width="45%">
-  <img src="docs/screenshots/strategy.svg" alt="Business Strategy" width="45%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/finance.svg" alt="Financial Analysis" width="45%">
-  <img src="docs/screenshots/settings.svg" alt="LLM Settings" width="45%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/report.svg" alt="Report" width="90%">
-</p>
+> **Note:** Add screenshots here by taking captures of the live demo and placing them in a `docs/screenshots/` folder.
+
+| Page | Preview |
+|------|---------|
+| Landing Page | `![Landing](docs/screenshots/landing.png)` |
+| Dashboard | `![Dashboard](docs/screenshots/dashboard.png)` |
+| Project Hub | `![Project](docs/screenshots/project.png)` |
+| Agent Output | `![Agent](docs/screenshots/agent.png)` |
+| Report | `![Report](docs/screenshots/report.png)` |
 
 ## Architecture
 

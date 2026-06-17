@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authAPI } from '@/services/api';
-import { safeError } from '@/lib/utils';
 import { Cpu, Save, RefreshCw, Check, Loader2, AlertCircle, Settings2, Trash2 } from 'lucide-react';
 
 const PROVIDERS = [
@@ -68,7 +67,7 @@ export default function LLMSettingsPage() {
       }
     } catch (err: any) {
       setAvailableModels([]);
-      setModelsError(safeError(err, 'Failed to fetch models'));
+      setModelsError(err?.response?.data?.detail || 'Failed to fetch models');
     } finally {
       setFetchingModels(false);
     }
@@ -103,7 +102,7 @@ export default function LLMSettingsPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err: any) {
-      setError(safeError(err, 'Failed to save settings'));
+      setError(err?.response?.data?.detail || 'Failed to save settings');
     } finally {
       setSaving(false);
     }
