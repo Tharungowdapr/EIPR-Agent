@@ -23,7 +23,11 @@ export default function LoginPage() {
       await login(email, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Login failed');
+      const d = err?.response?.data?.detail;
+      if (Array.isArray(d)) setError(d.map((e: any) => e.msg).join('; '));
+      else if (typeof d === 'string') setError(d);
+      else if (d && typeof d === 'object') setError(d.error || JSON.stringify(d));
+      else setError('Login failed');
     } finally {
       setLoading(false);
     }

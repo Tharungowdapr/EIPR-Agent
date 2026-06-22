@@ -24,7 +24,11 @@ export default function RegisterPage() {
       await register(name, email, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Registration failed');
+      const d = err?.response?.data?.detail;
+      if (Array.isArray(d)) setError(d.map((e: any) => e.msg).join('; '));
+      else if (typeof d === 'string') setError(d);
+      else if (d && typeof d === 'object') setError(d.error || JSON.stringify(d));
+      else setError('Registration failed');
     } finally {
       setLoading(false);
     }
