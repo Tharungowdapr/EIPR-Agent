@@ -19,6 +19,7 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "https://frontend-six-flax-42.vercel.app",
+        "https://eipr-phi.vercel.app",
     ]
 
     DEFAULT_LLM_PROVIDER: str = ""
