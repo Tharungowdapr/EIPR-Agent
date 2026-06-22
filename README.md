@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://frontend-six-flax-42.vercel.app" target="_blank"><b>Live Demo</b></a> ·
+  <a href="https://eipr-phi.vercel.app" target="_blank"><b>Live Demo</b></a> ·
   <a href="https://eipr-agent.onrender.com/api/docs" target="_blank"><b>API Docs</b></a> ·
   <a href="https://github.com/Tharungowdapr/EIPR-Agent" target="_blank"><b>GitHub</b></a>
 </p>
@@ -30,7 +30,7 @@ EIPR-Agent is an intelligent analysis platform that takes a business idea or dom
 
 | Service | URL | Stack |
 |---------|-----|-------|
-| **Frontend** | [https://frontend-six-flax-42.vercel.app](https://frontend-six-flax-42.vercel.app) | Next.js 16 on Vercel (free) |
+| **Frontend** | [https://eipr-phi.vercel.app](https://eipr-phi.vercel.app) | Next.js 16 on Vercel (free) |
 | **Backend API** | [https://eipr-agent.onrender.com](https://eipr-agent.onrender.com) | FastAPI on Render (free) |
 | **API Documentation** | [https://eipr-agent.onrender.com/api/docs](https://eipr-agent.onrender.com/api/docs) | Swagger UI |
 | **Database** | PostgreSQL on Render | Free tier, auto-provisioned |

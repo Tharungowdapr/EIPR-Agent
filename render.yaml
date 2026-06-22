@@ -19,7 +19,7 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: ALLOWED_ORIGINS
-        value: '["https://frontend-six-flax-42.vercel.app"]'
+        value: '["https://eipr-phi.vercel.app"]'
       - key: LOG_LEVEL
         value: INFO
       - key: ENABLE_MLFLOW
