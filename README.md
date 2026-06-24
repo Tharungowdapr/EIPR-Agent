@@ -1,4 +1,4 @@
-# EIPR-Agent
+# Entrepreneurial and Financial Decision Support System for Startup Evaluation and Investment Feasibility Analysis
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/python-3.11-blue?style=flat-square&logo=python&logoColor=white">
